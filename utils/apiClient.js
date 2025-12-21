@@ -65,11 +65,10 @@ apiClient.interceptors.response.use(
 
     // Handle authentication errors globally
     if (status === 401) {
-      // Clear invalid token
+      // Clear invalid token and redirect to login
       if (typeof window !== "undefined") {
         localStorage.removeItem("user");
-        // Optionally redirect to login
-        // window.location.href = '/login';
+        window.location.href = "/login";
       }
     }
 
