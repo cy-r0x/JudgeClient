@@ -13,7 +13,7 @@ import {
 } from "react-icons/md";
 import Link from "next/link";
 import submissionModule from "@/api/submission/submission";
-import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
+
 import PageLoading from "@/components/LoadingSpinner/PageLoading";
 import { getRelativeTime } from "@/utils/dateFormatter";
 import EmptyState from "@/components/EmptyState/EmptyState";
@@ -97,7 +97,9 @@ export default function AdminSubmissions({ params }) {
             Back to Admin
           </Link>
         </div>
-        <ErrorMessage message={error} type="error" fullWidth={true} />
+        <div className="bg-red-900/20 border border-red-500/50 rounded-lg p-4 text-red-400">
+          <p>{error}</p>
+        </div>
       </div>
     );
   }
@@ -304,7 +306,7 @@ export default function AdminSubmissions({ params }) {
                   <td className="py-3 px-4 text-blue-400 hover:underline">
                     <Link href={`/contests/${contestId}/${item.problem_id}`}>
                       {String.fromCharCode(
-                        "A".charCodeAt(0) + item.problem_id - 1
+                        "A".charCodeAt(0) + item.problem_index - 1
                       )}
                     </Link>
                   </td>

@@ -5,7 +5,6 @@ import { EditorSection } from "@/components/ProblemViewComponent/ClientComponent
 import ProblemViewComponent from "@/components/ProblemViewComponent/ProblemViewComponent";
 import { CompactTimer } from "@/components/TimeCounterComponent/TimeCounterComponent";
 import problemModule from "@/api/problem/problem";
-import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
 import PageLoading from "@/components/LoadingSpinner/PageLoading";
 
 export default function ProblemDescription({ params }) {
@@ -22,13 +21,15 @@ export default function ProblemDescription({ params }) {
       const { data, error } = await problemModule.getProblem(problemId);
 
       if (error) {
-        setError(error);
+        // Auth errors (401) handled by apiClient interceptor
+        console.error("Error fetching problem:", error);
         setLoading(false);
         return;
       }
 
       if (!data) {
-        setError("Problem not found");
+        // Auth errors (401) handled by apiClient interceptor
+        console.error("Problem not found");
         setLoading(false);
         return;
       }
@@ -70,33 +71,13 @@ export default function ProblemDescription({ params }) {
     return <PageLoading text="Loading problem..." size="xl" />;
   }
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center h-[calc(100vh-70px)] p-8">
-        <div className="max-w-md w-full">
-          <ErrorMessage message={error} type="error" fullWidth={true} />
-        </div>
-      </div>
-    );
-  }
-
   if (!problemData) {
-    return (
-      <div className="flex items-center justify-center h-[calc(100vh-70px)] p-8">
-        <div className="max-w-md w-full">
-          <ErrorMessage
-            message="Problem not found"
-            type="error"
-            fullWidth={true}
-          />
-        </div>
-      </div>
-    );
+    return null;
   }
 
   return (
     <div className="flex flex-col h-[calc(100vh-70px)] overflow-hidden">
-      <div className="flex flex-grow overflow-hidden">
+      <div className="flex grow overflow-hidden">
         {/* Problem description - 60% width */}
         <div className="w-[60%] overflow-auto border-r border-zinc-700">
           <ProblemViewComponent problem={problemData} contestId={contestId} />
@@ -110,7 +91,7 @@ export default function ProblemDescription({ params }) {
               durationSeconds={problemData.duration_seconds}
             />
           )}
-          <div className="flex-grow overflow-hidden">
+          <div className="grow overflow-hidden">
             <EditorSection problemData={problemData} contestId={contestId} />
           </div>
         </div>

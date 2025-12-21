@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { RiTrophyFill, RiMedalFill, RiStarFill } from "react-icons/ri";
 
 /**
@@ -8,18 +9,25 @@ import { RiTrophyFill, RiMedalFill, RiStarFill } from "react-icons/ri";
  * @param {Object} props - Component props
  * @param {Object} props.standingsData - Standings data from API
  * @param {number} props.standingsData.contest_id - Contest ID
- * @param {number} props.standingsData.total_problem_count - Total number of problems
+ * @param {Object} props.standingsData.problem_mapping - Mapping of problem index to problem ID
  * @param {Array} props.standingsData.standings - Array of user standings
  * @param {number} props.currentPage - Current page number
  * @param {number} props.limit - Items per page
  * @returns {JSX.Element} Standings table component
  */
-export default function StandingsComponent({ standingsData, currentPage = 1, limit = 100 }) {
-  const { total_problem_count, standings, problem_solve_status } =
+export default function StandingsComponent({
+  standingsData,
+  currentPage = 1,
+  limit = 100,
+}) {
+  const { problem_mapping, standings, problem_solve_status, contest_id } =
     standingsData;
 
+  // Get problem count from mapping
+  const problemCount = Object.keys(problem_mapping || {}).length;
+
   // Generate problem letters (A, B, C, ...)
-  const problemLetters = Array.from({ length: total_problem_count }, (_, i) =>
+  const problemLetters = Array.from({ length: problemCount }, (_, i) =>
     String.fromCharCode(65 + i)
   );
 
@@ -32,9 +40,9 @@ export default function StandingsComponent({ standingsData, currentPage = 1, lim
     return { solved: 0, attempted: 0 };
   };
 
-  // Helper function to get problem data for a user
+  // Helper function to get problem data for a user (now just array index)
   const getProblemData = (problems, problemIndex) => {
-    return problems.find((p) => p.problem_index === problemIndex + 1);
+    return problems[problemIndex];
   };
 
   // Helper function to format problem cell
@@ -137,17 +145,21 @@ export default function StandingsComponent({ standingsData, currentPage = 1, lim
             </th>
             {problemLetters.map((letter, index) => {
               const stats = getProblemStats(index);
+              const problemId = problem_mapping[index + 1];
               return (
                 <th
                   key={index}
                   className="px-3 py-4 text-center font-bold text-sm text-zinc-300 min-w-[70px] border-l border-zinc-700/50"
                 >
-                  <div className="flex flex-col items-center gap-1">
+                  <Link
+                    href={`/contests/${contest_id}/${problemId}`}
+                    className="flex flex-col items-center gap-1 hover:text-orange-400 transition-colors"
+                  >
                     <span>{letter}</span>
                     <span className="text-xs text-zinc-500 font-normal">
                       {stats.solved}/{stats.attempted}
                     </span>
-                  </div>
+                  </Link>
                 </th>
               );
             })}

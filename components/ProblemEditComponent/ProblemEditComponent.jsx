@@ -2,6 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import {
+  MdInfo,
+  MdDescription,
+  MdCode,
+  MdSpeed,
+  MdCheckCircle,
+} from "react-icons/md";
 import BasicInfoTab from "./tabs/BasicInfoTab";
 import DescriptionTab from "./tabs/DescriptionTab";
 import TestCasesTab from "./tabs/TestCasesTab";
@@ -50,15 +57,6 @@ export default function ProblemEditComponent({ problemId }) {
         const { data, error } = await problemMoudle.getProblem(problemId);
 
         if (error) {
-          // Check if it's an authentication error
-          if (
-            error === "No access token found" ||
-            error === "Invalid or expired token"
-          ) {
-            // Redirect to login page
-            router.push("/login");
-            return;
-          }
           throw new Error(error);
         }
 
@@ -77,13 +75,7 @@ export default function ProblemEditComponent({ problemId }) {
         }
       } catch (error) {
         console.error("Error fetching problem:", error);
-        showNotification(
-          error.message || "Failed to load problem data",
-          "error"
-        );
-
-        // Optionally redirect back or show error state
-        // You might want to redirect to problem list or show an error page
+        // Note: Auth errors (401) are handled by apiClient interceptor
       } finally {
         setLoading(false);
       }
@@ -126,12 +118,27 @@ export default function ProblemEditComponent({ problemId }) {
   };
 
   //solution has not been implemented yet!
-  const tabs = [
-    "Basic Info",
-    "Problem Description",
-    "Test Cases",
-    "Limits",
-    "Checker",
+  const menuItems = [
+    {
+      title: "Basic Info",
+      icon: <MdInfo className="text-xl" />,
+    },
+    {
+      title: "Problem Description",
+      icon: <MdDescription className="text-xl" />,
+    },
+    {
+      title: "Test Cases",
+      icon: <MdCode className="text-xl" />,
+    },
+    {
+      title: "Limits",
+      icon: <MdSpeed className="text-xl" />,
+    },
+    {
+      title: "Checker",
+      icon: <MdCheckCircle className="text-xl" />,
+    },
   ];
 
   const handleTabChange = (index) => {
@@ -163,94 +170,117 @@ export default function ProblemEditComponent({ problemId }) {
   };
 
   return (
-    <div className="p-2">
-      <div className="max-w-6xl mx-auto bg-zinc-800 rounded-lg shadow-lg overflow-hidden">
-        {/* Header with Tabs and Save Button */}
-        <div className="flex justify-between items-center border-b border-zinc-700">
-          <div className="flex">
-            {tabs.map((tab, index) => (
-              <button
-                key={index}
-                onClick={() => handleTabChange(index)}
-                className={`px-4 py-3 transition-colors cursor-pointer ${
-                  activeTab === index
-                    ? "bg-orange-500 text-white font-medium"
-                    : "bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-white"
-                }`}
-                disabled={loading}
-              >
-                {tab}
-              </button>
-            ))}
-          </div>
-          <div className="pr-6">
-            <Button
-              name={loading ? "Loading..." : "Save Changes"}
-              onClick={handleSave}
-              disabled={loading}
-            />
-          </div>
+    <div className="flex h-[calc(100vh-64px)] bg-linear-to-br from-zinc-950 to-zinc-900">
+      {/* Sidebar */}
+      <div className="w-72 bg-zinc-900/80 shadow-xl backdrop-blur-sm border-r border-zinc-800 flex flex-col">
+        <div className="p-5 border-b border-zinc-800">
+          <h2 className="text-xl font-bold text-orange-400">
+            {loading ? "Loading..." : problemData.title || "Problem Edit"}
+          </h2>
+          <p className="text-xs text-zinc-500 mt-1">Problem Management</p>
         </div>
 
-        {/* Tab Content */}
-        <div className="p-6">
-          {loading ? (
-            <div className="flex items-center justify-center py-12">
-              <div className="flex items-center space-x-3">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
-                <span className="text-zinc-300 text-lg">
-                  Loading problem data...
-                </span>
-              </div>
+        <div className="py-2 px-3 flex-1 overflow-y-auto">
+          <p className="text-xs font-medium text-zinc-500 uppercase tracking-wider mb-2 ml-2">
+            Navigation
+          </p>
+          {menuItems.map((item, idx) => (
+            <div
+              className={`px-4 py-3 mb-1 rounded-lg transition-all duration-200 flex items-center gap-3 cursor-pointer ${
+                activeTab === idx
+                  ? "bg-orange-500/90 text-white shadow-md shadow-orange-900/20 font-medium"
+                  : "hover:bg-zinc-800/70 text-zinc-400 hover:text-white"
+              }`}
+              key={`nav-item-${idx}`}
+              onClick={() => setActiveTab(idx)}
+            >
+              <span className="text-lg">{item.icon}</span>
+              <span className="w-full">{item.title}</span>
             </div>
-          ) : (
-            <>
-              {activeTab === 0 && (
-                <BasicInfoTab
-                  problemData={problemData}
-                  handleInputChange={handleInputChange}
-                />
-              )}
-              {activeTab === 1 && (
-                <DescriptionTab
-                  problemData={problemData}
-                  setProblemData={setProblemData}
-                />
-              )}
-              {activeTab === 2 && (
-                <TestCasesTab
-                  problemData={problemData}
-                  setProblemData={setProblemData}
-                  setShowTestCaseModal={setShowTestCaseModal}
-                  setCurrentTestCaseType={setCurrentTestCaseType}
-                  setCurrentTestCase={setCurrentTestCase}
-                  setEditingIndex={setEditingIndex}
-                  showNotification={showNotification}
-                />
-              )}
-              {activeTab === 3 && (
-                <LimitsTab
-                  problemData={problemData}
-                  handleInputChange={handleInputChange}
-                />
-              )}
-              {activeTab === 4 && (
-                <CheckerTab
-                  problemData={problemData}
-                  setProblemData={setProblemData}
-                />
-              )}
-              {activeTab === 5 && (
-                <SolutionsTab
-                  problemData={problemData}
-                  setProblemData={setProblemData}
-                  setShowSolutionModal={setShowSolutionModal}
-                  setCurrentSolution={setCurrentSolution}
-                  setEditingIndex={setEditingIndex}
-                />
-              )}
-            </>
-          )}
+          ))}
+        </div>
+
+        <div className="p-3 border-t border-zinc-800 mt-4">
+          <Button
+            name={loading ? "Loading..." : "Save Changes"}
+            onClick={handleSave}
+            disabled={loading}
+            className="w-full"
+          />
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="p-6">
+          <div className="bg-zinc-900/80 backdrop-blur-sm rounded-xl shadow-xl border border-zinc-800/50 p-6">
+            <div className="flex items-center space-x-2 pb-4 mb-6 border-b border-zinc-800">
+              <span className="p-2 bg-orange-500/10 text-orange-500 rounded-lg">
+                {menuItems[activeTab].icon}
+              </span>
+              <h1 className="text-2xl font-bold text-white">
+                {menuItems[activeTab].title}
+              </h1>
+            </div>
+
+            {loading ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="flex items-center space-x-3">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+                  <span className="text-zinc-300 text-lg">
+                    Loading problem data...
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <div>
+                {activeTab === 0 && (
+                  <BasicInfoTab
+                    problemData={problemData}
+                    handleInputChange={handleInputChange}
+                  />
+                )}
+                {activeTab === 1 && (
+                  <DescriptionTab
+                    problemData={problemData}
+                    setProblemData={setProblemData}
+                  />
+                )}
+                {activeTab === 2 && (
+                  <TestCasesTab
+                    problemData={problemData}
+                    setProblemData={setProblemData}
+                    setShowTestCaseModal={setShowTestCaseModal}
+                    setCurrentTestCaseType={setCurrentTestCaseType}
+                    setCurrentTestCase={setCurrentTestCase}
+                    setEditingIndex={setEditingIndex}
+                    showNotification={showNotification}
+                  />
+                )}
+                {activeTab === 3 && (
+                  <LimitsTab
+                    problemData={problemData}
+                    handleInputChange={handleInputChange}
+                  />
+                )}
+                {activeTab === 4 && (
+                  <CheckerTab
+                    problemData={problemData}
+                    setProblemData={setProblemData}
+                  />
+                )}
+                {activeTab === 5 && (
+                  <SolutionsTab
+                    problemData={problemData}
+                    setProblemData={setProblemData}
+                    setShowSolutionModal={setShowSolutionModal}
+                    setCurrentSolution={setCurrentSolution}
+                    setEditingIndex={setEditingIndex}
+                  />
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

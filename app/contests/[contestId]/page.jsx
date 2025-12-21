@@ -5,7 +5,7 @@ import Link from "next/link";
 import ProblemComponent from "@/components/ProblemListComponent/ProblemListComponent";
 import TimeCounterComponent from "@/components/TimeCounterComponent/TimeCounterComponent";
 import Bar from "@/components/BarComponent/BarComponent";
-import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
+
 import EmptyState from "@/components/EmptyState/EmptyState";
 import PageLoading from "@/components/LoadingSpinner/PageLoading";
 import contestModule from "@/api/contest/contest";
@@ -48,8 +48,8 @@ function ProblemList({ params }) {
     return (
       <div className="mx-8 my-4">
         <Bar title={"Error"} />
-        <div className="mt-6">
-          <ErrorMessage message={error} type="error" fullWidth={true} />
+        <div className="mt-6 bg-red-900/20 border border-red-500/50 rounded-lg p-4 text-red-400">
+          <p>{error}</p>
         </div>
       </div>
     );
@@ -64,7 +64,7 @@ function ProblemList({ params }) {
   return (
     <>
       <div className="flex my-4 mx-8 gap-x-4">
-        <div className="flex-[7] space-y-4">
+        <div className="flex-7 space-y-4">
           <Bar title={"Problems"} />
           <div className="flex flex-col gap-2">
             {problems && problems.length > 0 ? (
@@ -88,7 +88,7 @@ function ProblemList({ params }) {
           </div>
         </div>
 
-        <div className="flex-[3] text-wrap space-y-4">
+        <div className="flex-3 text-wrap space-y-4">
           <div className="space-y-4">
             <Bar title={contest.title} />
             <TimeCounterComponent startUnix={startTime} endUnix={endTime} />

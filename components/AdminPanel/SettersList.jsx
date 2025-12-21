@@ -2,7 +2,6 @@
 
 import { MdDelete, MdPerson } from "react-icons/md";
 import PageLoading from "@/components/LoadingSpinner/PageLoading";
-import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
 import EmptyState from "@/components/EmptyState/EmptyState";
 
 export default function SettersList({
@@ -21,12 +20,17 @@ export default function SettersList({
 
   if (error) {
     return (
-      <ErrorMessage
-        message={error}
-        type="error"
-        onRetry={onRetry}
-        fullWidth={true}
-      />
+      <div className="bg-red-900/20 border border-red-500/50 rounded-lg p-4 text-red-400">
+        <p>{error}</p>
+        {onRetry && (
+          <button
+            onClick={onRetry}
+            className="mt-2 text-sm underline hover:text-red-300"
+          >
+            Retry
+          </button>
+        )}
+      </div>
     );
   }
 

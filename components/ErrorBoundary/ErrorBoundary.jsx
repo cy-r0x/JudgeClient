@@ -32,7 +32,7 @@ class ErrorBoundary extends React.Component {
         <div className="min-h-screen flex items-center justify-center bg-zinc-950 p-4">
           <div className="max-w-md w-full bg-zinc-900 rounded-lg shadow-xl border border-zinc-800 p-6">
             <div className="flex items-center space-x-3 mb-4">
-              <div className="flex-shrink-0">
+              <div className="shrink-0">
                 <svg
                   className="h-8 w-8 text-red-500"
                   fill="currentColor"

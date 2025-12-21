@@ -78,31 +78,14 @@ export default function StandingsPage({ params }) {
     // Fetch immediately
     fetchStandings(currentPage);
 
-    // Check if contest has ended
-    const isContestEnded = () => {
-      if (!standingsData?.start_time || !standingsData?.duration_seconds) {
-        return false;
-      }
-      const startTime = new Date(standingsData.start_time).getTime();
-      const endTime = startTime + standingsData.duration_seconds * 1000;
-      return Date.now() > endTime;
-    };
+    // Set up interval for auto-refresh (15 seconds)
+    const interval = setInterval(() => {
+      fetchStandings(currentPage);
+    }, 30000);
 
-    // Only set up interval if contest hasn't ended
-    if (!isContestEnded()) {
-      const interval = setInterval(() => {
-        fetchStandings(currentPage);
-      }, 15000);
-
-      // Cleanup interval on unmount
-      return () => clearInterval(interval);
-    }
-  }, [
-    contestId,
-    currentPage,
-    standingsData?.start_time,
-    standingsData?.duration_seconds,
-  ]);
+    // Cleanup interval on unmount
+    return () => clearInterval(interval);
+  }, [contestId, currentPage]);
 
   // Handle page change
   const handlePageChange = (page) => {
@@ -160,8 +143,8 @@ export default function StandingsPage({ params }) {
 
         {/* Standings Table */}
         <div className="bg-zinc-900 rounded-lg shadow-xl overflow-hidden border border-zinc-800">
-          <StandingsComponent 
-            standingsData={standingsData} 
+          <StandingsComponent
+            standingsData={standingsData}
             currentPage={currentPage}
             limit={standingsData?.limit || 100}
           />

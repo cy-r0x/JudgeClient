@@ -32,7 +32,6 @@ export default function ManageUsersTab({
   const [newUser, setNewUser] = useState({
     full_name: "",
     username: "",
-    email: "",
     password: "",
     room_no: "",
     pc_no: "",
@@ -81,7 +80,6 @@ export default function ManageUsersTab({
     if (
       !newUser.full_name.trim() ||
       !newUser.username.trim() ||
-      !newUser.email.trim() ||
       !newUser.password.trim()
     ) {
       showNotification("Please fill in all required fields", "error");
@@ -95,7 +93,6 @@ export default function ManageUsersTab({
       const userData = {
         full_name: newUser.full_name,
         username: newUser.username,
-        email: newUser.email,
         password: newUser.password,
         room_no: newUser.room_no || null,
         pc_no: newUser.pc_no ? parseInt(newUser.pc_no) : null,
@@ -111,7 +108,6 @@ export default function ManageUsersTab({
         setNewUser({
           full_name: "",
           username: "",
-          email: "",
           password: "",
           room_no: "",
           pc_no: "",
@@ -355,25 +351,6 @@ export default function ManageUsersTab({
               </div>
               <div>
                 <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-zinc-300 mb-1"
-                >
-                  Email *
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={newUser.email}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
-                  placeholder="Enter email address"
-                  disabled={loading}
-                  required
-                />
-              </div>
-              <div>
-                <label
                   htmlFor="password"
                   className="block text-sm font-medium text-zinc-300 mb-1"
                 >
@@ -600,7 +577,7 @@ export default function ManageUsersTab({
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <div className="flex-shrink-0 h-8 w-8">
+                        <div className="shrink-0 h-8 w-8">
                           <div className="h-8 w-8 rounded-full bg-orange-500 flex items-center justify-center">
                             <span className="text-white text-sm font-medium">
                               {(user.full_name || user.username)

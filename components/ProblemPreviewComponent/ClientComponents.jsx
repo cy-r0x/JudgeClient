@@ -82,7 +82,7 @@ export function EditorSection({ problem, problemID }) {
   };
 
   return (
-    <div className="flex flex-col h-full gap-4 overflow-hidden">
+    <div className="flex flex-col h-full gap-4">
       {/* Actions Section */}
       {/* <div className="bg-zinc-800/50 rounded-lg border border-zinc-700">
         <div className="px-4 py-3 border-b border-zinc-700">
@@ -101,10 +101,10 @@ export function EditorSection({ problem, problemID }) {
       </div> */}
 
       {/* Code Editor Section */}
-      <div className="flex-1 flex flex-col bg-zinc-800/50 rounded-lg border border-zinc-700 overflow-hidden">
-        <div className="flex-1 flex flex-col gap-4 p-6 overflow-hidden">
+      <div className="flex-1 flex flex-col bg-zinc-800/50 rounded-lg border border-zinc-700 overflow-hidden min-h-0">
+        <div className="flex flex-col gap-4 p-6 h-full">
           {/* Language Selector and Submit Button */}
-          <div className="flex gap-4 items-end">
+          <div className="flex gap-4 items-end shrink-0">
             <div className="flex-1">
               <label
                 htmlFor="language-select"
@@ -135,7 +135,7 @@ export function EditorSection({ problem, problemID }) {
           </div>
 
           {/* Code Editor */}
-          <div className="flex-1 border border-zinc-600 rounded-md overflow-hidden shadow-lg max-h-[665px]">
+          <div className="flex-1 border bg-[#262922] border-zinc-600 rounded-md overflow-auto shadow-lg min-h-0">
             <CodeEditor
               handleChange={setCode}
               selectedLanguage={selectedLanguage}

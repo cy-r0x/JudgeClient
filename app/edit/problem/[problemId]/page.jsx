@@ -9,7 +9,7 @@ function EditProblem({ params }) {
   const { problemId } = use(params);
 
   return (
-    <div className="my-4">
+    <div>
       <ProblemEditComponent problemId={problemId} />
     </div>
   );

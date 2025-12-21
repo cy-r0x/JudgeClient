@@ -77,9 +77,9 @@ export default function CreateContestModal({ isOpen, onClose }) {
         showNotification(error, "error");
       } else if (data && data.id) {
         showNotification("Contest created successfully!", "success");
-        // Redirect to edit page after short delay
+        // Redirect to manage page after short delay
         setTimeout(() => {
-          router.push(`/edit/contest/${data.id}`);
+          router.push(`/admin/manage/${data.id}`);
         }, 1000);
       }
     } catch (error) {

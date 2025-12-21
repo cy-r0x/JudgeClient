@@ -3,11 +3,11 @@ import { EditorSection } from "./ClientComponents";
 
 export default function ProblemPreviewComponent({ problem, problemID }) {
   return (
-    <div className="h-screen flex flex-col overflow-hidden bg-zinc-900">
+    <div className="h-[calc(100vh-64px)] flex flex-col bg-zinc-900">
       {/* Main Content */}
-      <div className="flex-1 flex gap-6 px-32 py-6 overflow-hidden mx-auto w-full">
+      <div className="flex-1 flex gap-6 px-32 py-6 overflow-hidden w-full">
         {/* Problem View Section */}
-        <section className="flex-[2] flex flex-col min-w-0">
+        <section className="flex-2 flex flex-col min-w-0 h-full">
           <div className="flex-1 bg-zinc-800/50 rounded-lg border border-zinc-700 overflow-hidden">
             <div className="h-full overflow-y-auto">
               <ProblemViewComponent problem={problem} />
@@ -16,7 +16,7 @@ export default function ProblemPreviewComponent({ problem, problemID }) {
         </section>
 
         {/* Editor Section */}
-        <section className="flex-1 flex flex-col min-w-0 h-fit">
+        <section className="flex-1 flex flex-col min-w-0 h-full">
           <EditorSection problem={problem} problemID={problemID} />
         </section>
       </div>

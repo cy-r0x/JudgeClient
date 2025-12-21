@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { MdCheck } from "react-icons/md";
 import CodeEditor from "@/components/EditorComponent/EditorComponent";
 import Button from "@/components/ButtonComponent/Button";
 import submissionModule from "@/api/submission/submission";
@@ -21,13 +22,20 @@ export function CopyButton({ text }) {
   return (
     <button
       onClick={copyToClipboard}
-      className={`absolute top-2 right-2 p-1 rounded  transition-colors ${
+      className={`absolute top-2 right-2 p-2 rounded transition-colors ${
         copied ? "bg-orange-500" : " bg-zinc-800 hover:bg-zinc-700"
       }`}
       title="Copy to clipboard"
       disabled={copied}
     >
-      {copied ? <p>Copied</p> : <p>Copy</p>}
+      {copied ? (
+        <div className="flex items-center gap-1">
+          <MdCheck className="text-white text-lg" />
+          <MdCheck className="text-white text-lg -ml-3.5" />
+        </div>
+      ) : (
+        <p className="text-white text-sm">Copy</p>
+      )}
     </button>
   );
 }
@@ -212,7 +220,7 @@ export function EditorSection({ problemData, contestId }) {
           />
         </div>
       </div>
-      <div>
+      <div className="flex-1 border bg-[#262922] border-zinc-600 rounded-md overflow-auto shadow-lg min-h-0">
         <CodeEditor
           handleChange={setCode}
           selectedLanguage={selectedLanguage}

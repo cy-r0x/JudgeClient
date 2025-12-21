@@ -4,7 +4,7 @@ import { use, useState, useEffect, useRef } from "react";
 import { SubmissionCodeViewer } from "./client";
 import Link from "next/link";
 import submissionModule from "@/api/submission/submission";
-import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
+
 import PageLoading from "@/components/LoadingSpinner/PageLoading";
 import { getRelativeTime } from "@/utils/dateFormatter";
 import { getVerdictName, getVerdictColor } from "@/utils/verdictFormatter";
@@ -77,7 +77,9 @@ export default function SubmissionPage({ params }) {
   if (error) {
     return (
       <div className="px-6 md:px-16 py-6">
-        <ErrorMessage message={error} type="error" fullWidth={true} />
+        <div className="bg-red-900/20 border border-red-500/50 rounded-lg p-4 text-red-400">
+          <p>{error}</p>
+        </div>
       </div>
     );
   }
@@ -85,11 +87,9 @@ export default function SubmissionPage({ params }) {
   if (!submissionData) {
     return (
       <div className="px-6 md:px-16 py-6">
-        <ErrorMessage
-          message="Submission not found"
-          type="error"
-          fullWidth={true}
-        />
+        <div className="bg-red-900/20 border border-red-500/50 rounded-lg p-4 text-red-400">
+          <p>Submission not found</p>
+        </div>
       </div>
     );
   }

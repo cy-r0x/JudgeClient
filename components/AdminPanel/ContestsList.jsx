@@ -4,7 +4,6 @@ import Link from "next/link";
 import { formatDateTime, formatDuration } from "@/utils/dateFormatter";
 import { MdEventNote } from "react-icons/md";
 import PageLoading from "@/components/LoadingSpinner/PageLoading";
-import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
 import EmptyState from "@/components/EmptyState/EmptyState";
 
 export default function ContestsList({
@@ -35,12 +34,17 @@ export default function ContestsList({
 
   if (error) {
     return (
-      <ErrorMessage
-        message={error}
-        type="error"
-        onRetry={onRetry}
-        fullWidth={true}
-      />
+      <div className="bg-red-900/20 border border-red-500/50 rounded-lg p-4 text-red-400">
+        <p>{error}</p>
+        {onRetry && (
+          <button
+            onClick={onRetry}
+            className="mt-2 text-sm underline hover:text-red-300"
+          >
+            Retry
+          </button>
+        )}
+      </div>
     );
   }
 
@@ -109,9 +113,9 @@ export default function ContestsList({
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-300">
                 <div className="flex space-x-3">
-                  <Link href={`/edit/contest/${contest.id}`}>
-                    <button className="text-blue-400 hover:text-blue-300 transition-colors">
-                      Edit
+                  <Link href={`/admin/manage/${contest.id}`}>
+                    <button className="text-orange-400 hover:text-orange-300 transition-colors font-medium">
+                      Manage
                     </button>
                   </Link>
                   <Link href={`/admin/submissions/${contest.id}`}>

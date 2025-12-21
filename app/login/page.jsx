@@ -6,7 +6,6 @@ import Bar from "@/components/BarComponent/BarComponent";
 import { useAuth } from "@/contexts/AuthContext";
 import { withGuest } from "@/components/HOC/withAuth";
 import userModule from "@/api/user/user";
-import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
 
 function LoginPage() {
   const [formData, setFormData] = useState({
@@ -73,13 +72,16 @@ function LoginPage() {
           <Bar title={"Login"} center={true} />
           <div className="bg-zinc-800 inline-flex flex-col justify-center items-center p-10">
             {error && (
-              <div className="mb-4 w-full">
-                <ErrorMessage
-                  message={error}
-                  type="error"
-                  onDismiss={() => setError("")}
-                  fullWidth={true}
-                />
+              <div className="mb-4 w-full bg-red-900/20 border border-red-500/50 rounded-lg p-3 text-red-400">
+                <div className="flex justify-between items-center">
+                  <p>{error}</p>
+                  <button
+                    onClick={() => setError("")}
+                    className="ml-2 text-red-300 hover:text-red-100"
+                  >
+                    ✕
+                  </button>
+                </div>
               </div>
             )}
             <form className="flex flex-col gap-4" onSubmit={handleSubmit}>

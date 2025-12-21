@@ -14,6 +14,7 @@ import ContestsList from "@/components/AdminPanel/ContestsList";
 import SettersList from "@/components/AdminPanel/SettersList";
 import CreateSetterForm from "@/components/AdminPanel/CreateSetterForm";
 import SearchBar from "@/components/AdminPanel/SearchBar";
+import AvailableProblemsList from "@/components/AdminPanel/AvailableProblemsList";
 
 function AdminPanel() {
   const [contestList, setContestList] = useState([]);
@@ -155,10 +156,14 @@ function AdminPanel() {
       title: "Manage Setters",
       icon: <MdPerson className="text-xl" />,
     },
+    {
+      title: "View Available Problems",
+      icon: <MdCreate className="text-xl" />,
+    },
   ];
 
   return (
-    <div className="flex min-h-[calc(100vh-64px)] bg-gradient-to-br from-zinc-950 to-zinc-900">
+    <div className="flex min-h-[calc(100vh-64px)] bg-linear-to-br from-zinc-950 to-zinc-900">
       {modalActive && (
         <CreateContestModal
           isOpen={modalActive}
@@ -245,6 +250,10 @@ function AdminPanel() {
               <SearchBar placeholder="Search setters..." disabled={loading} />
             )}
 
+            {activeItem === 2 && (
+              <SearchBar placeholder="Search problems..." disabled={loading} />
+            )}
+
             {activeItem === 0 ? (
               <ContestsList
                 contests={contestList}
@@ -253,7 +262,7 @@ function AdminPanel() {
                 onRetry={fetchContests}
                 onCreate={handleCreate}
               />
-            ) : (
+            ) : activeItem === 1 ? (
               <SettersList
                 setters={setterList}
                 loading={loading}
@@ -264,6 +273,8 @@ function AdminPanel() {
                 successMessage={setterSuccess}
                 errorMessage={setterError}
               />
+            ) : (
+              <AvailableProblemsList loading={loading} />
             )}
           </div>
         </div>
