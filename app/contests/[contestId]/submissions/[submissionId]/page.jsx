@@ -9,6 +9,27 @@ import PageLoading from "@/components/LoadingSpinner/PageLoading";
 import { getRelativeTime } from "@/utils/dateFormatter";
 import { getVerdictName, getVerdictColor } from "@/utils/verdictFormatter";
 
+const normalizeSubmission = (submission) => ({
+  id: submission?.id,
+  userId: submission?.userId ?? submission?.user_id ?? submission?.user?.id,
+  username:
+    submission?.username ?? submission?.user?.username ?? "Unknown user",
+  problemId:
+    submission?.problemId ?? submission?.problem_id ?? submission?.problem?.id,
+  problemTitle:
+    submission?.problem?.title ?? submission?.problemTitle ?? "Problem",
+  contestId:
+    submission?.contestId ?? submission?.contest_id ?? submission?.contest?.id,
+  language: submission?.language ?? "",
+  sourceCode: submission?.sourceCode ?? submission?.source_code ?? "",
+  verdict: submission?.verdict ?? "",
+  firstBlood: submission?.firstBlood ?? submission?.first_blood ?? false,
+  executionTime:
+    submission?.executionTime ?? submission?.execution_time ?? null,
+  memoryUsed: submission?.memoryUsed ?? submission?.memory_used ?? null,
+  submittedAt: submission?.submittedAt ?? submission?.submitted_at ?? null,
+});
+
 export default function SubmissionPage({ params }) {
   const { contestId, submissionId } = use(params);
   const [submissionData, setSubmissionData] = useState(null);
@@ -22,9 +43,8 @@ export default function SubmissionPage({ params }) {
     let isInitialLoad = true;
 
     const fetchSubmission = async () => {
-      const { data, error } = await submissionModule.getSubmission(
-        submissionId
-      );
+      const { data, error } =
+        await submissionModule.getSubmission(submissionId);
 
       if (error) {
         setError(error);
@@ -37,14 +57,18 @@ export default function SubmissionPage({ params }) {
         return;
       }
 
-      setSubmissionData(data);
+      const normalizedSubmission = normalizeSubmission(data);
+      setSubmissionData(normalizedSubmission);
       if (isInitialLoad) {
         setLoading(false);
         isInitialLoad = false;
       }
 
       // Stop polling if verdict is not pending
-      if (data && data.verdict !== "Pending") {
+      if (
+        normalizedSubmission.verdict &&
+        normalizedSubmission.verdict.toLowerCase() !== "pending"
+      ) {
         if (intervalRef.current) {
           clearInterval(intervalRef.current);
           intervalRef.current = null;
@@ -95,12 +119,17 @@ export default function SubmissionPage({ params }) {
   }
 
   // Format the submitted date as "time ago"
-  const timeAgo = getRelativeTime(submissionData.submitted_at);
+  const timeAgo = getRelativeTime(submissionData.submittedAt);
+  const verdict = submissionData.verdict;
+  const isPending = verdict?.toLowerCase() === "pending";
+  const problemHref = submissionData.problemId
+    ? `/contests/${contestId}/${submissionData.problemId}`
+    : `/contests/${contestId}`;
 
   return (
     <div className="px-6 md:px-16 py-6">
       <Link
-        href={`/contests/${contestId}/${submissionData.problem_id}`}
+        href={problemHref}
         className="inline-flex items-center text-orange-500 hover:text-orange-600 transition-colors mb-4"
       >
         <svg
@@ -133,14 +162,10 @@ export default function SubmissionPage({ params }) {
           <div className="text-zinc-400 text-sm">Verdict</div>
           <div
             className={`font-medium text-lg ${getVerdictColor(
-              submissionData.verdict
-            )} ${
-              submissionData.verdict === "Pending"
-                ? "animate-pulse flex items-center gap-2"
-                : ""
-            }`}
+              verdict,
+            )} ${isPending ? "animate-pulse flex items-center gap-2" : ""}`}
           >
-            {submissionData.verdict === "Pending" && (
+            {isPending && (
               <svg
                 className="animate-spin h-5 w-5"
                 xmlns="http://www.w3.org/2000/svg"
@@ -162,15 +187,15 @@ export default function SubmissionPage({ params }) {
                 ></path>
               </svg>
             )}
-            {getVerdictName(submissionData.verdict)}
+            {getVerdictName(verdict)}
           </div>
         </div>
 
         <div className="bg-zinc-800 p-4 rounded-lg">
           <div className="text-zinc-400 text-sm">Execution Time</div>
           <div className="font-medium text-lg">
-            {submissionData.execution_time
-              ? `${submissionData.execution_time * 1000} ms`
+            {submissionData.executionTime != null
+              ? `${(Number(submissionData.executionTime) * 1000).toFixed(2)} ms`
               : "—"}
           </div>
         </div>
@@ -178,8 +203,8 @@ export default function SubmissionPage({ params }) {
         <div className="bg-zinc-800 p-4 rounded-lg">
           <div className="text-zinc-400 text-sm">Memory Used</div>
           <div className="font-medium text-lg">
-            {submissionData.memory_used
-              ? `${submissionData.memory_used} KB`
+            {submissionData.memoryUsed != null
+              ? `${Number(submissionData.memoryUsed).toFixed(2)} KB`
               : "—"}
           </div>
         </div>
@@ -206,17 +231,19 @@ export default function SubmissionPage({ params }) {
               {submissionData.language === "cpp"
                 ? "GNU G++23"
                 : submissionData.language === "py"
-                ? "Python 3.10"
-                : submissionData.language === "c"
-                ? "GNU GCC11"
-                : submissionData.language}
+                  ? "Python 3.10"
+                  : submissionData.language === "c"
+                    ? "GNU GCC11"
+                    : submissionData.language === "java"
+                      ? "Java 21"
+                      : submissionData.language}
             </span>
           </div>
         </div>
 
         <div className="border-2 border-zinc-800 rounded-lg overflow-hidden">
           <SubmissionCodeViewer
-            code={submissionData.source_code}
+            code={submissionData.sourceCode}
             language={submissionData.language}
           />
         </div>
