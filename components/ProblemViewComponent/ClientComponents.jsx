@@ -205,6 +205,7 @@ export function EditorSection({ problemData, contestId }) {
             <option value="c">GNU GCC11</option>
             <option value="cpp">GNU G++23</option>
             <option value="py">Python 3.10</option>
+            <option value="js">Node.js 24</option>
           </select>
         </div>
         <div className="flex justify-end gap-3 mt-3">

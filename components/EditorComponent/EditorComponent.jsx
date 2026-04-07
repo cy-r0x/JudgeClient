@@ -3,12 +3,14 @@ import CodeMirror from "@uiw/react-codemirror";
 import { cpp } from "@codemirror/lang-cpp";
 import { python } from "@codemirror/lang-python";
 import { java } from "@codemirror/lang-java";
+import { javascript } from "@codemirror/lang-javascript";
 
 function CodeEditor({ handleChange, selectedLanguage, value, height }) {
   const languageExtensions = {
     cpp: cpp(),
     python: python(),
     java: java(),
+    js: javascript(),
   };
 
   const lang = languageExtensions[selectedLanguage] || cpp();
