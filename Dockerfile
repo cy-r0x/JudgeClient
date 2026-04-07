@@ -10,6 +10,7 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 RUN npm i
 RUN npm ci
+RUN npm audit
 
 # Rebuild the source code only when needed
 FROM base AS builder
