@@ -80,7 +80,7 @@ userModule.Register = async (userData) => {
 userModule.getContestUsers = async (contestId) => {
   try {
     const response = await apiClient.get(
-      API_ENDPOINTS.CONTEST_USERS(contestId)
+      API_ENDPOINTS.CONTEST_USERS(contestId),
     );
     return { data: response.data };
   } catch (error) {
@@ -97,6 +97,65 @@ userModule.getContestUsers = async (contestId) => {
     }
     if (error.status === 404) {
       return { error: "Contest not found" };
+    }
+
+    return { error: handledError.error };
+  }
+};
+
+/**
+ * Get user information by ID
+ * @param {string|number} userId - User ID
+ * @returns {Promise<{data?: Object, error?: string}>}
+ */
+userModule.getUserInfo = async (userId) => {
+  try {
+    const response = await apiClient.get(API_ENDPOINTS.USER_INFO(userId));
+    return { data: response.data };
+  } catch (error) {
+    const handledError = handleApiError(error, {
+      context: "Get User Info",
+      userId,
+    });
+
+    if (error.status === 401) {
+      return { error: "Invalid or expired token" };
+    }
+    if (error.status === 404) {
+      return { error: "User not found" };
+    }
+
+    return { error: handledError.error };
+  }
+};
+
+/**
+ * Update user information (Admin only)
+ * @param {string|number} userId - User ID
+ * @param {Object} payload - User update payload
+ * @returns {Promise<{data?: Object, error?: string}>}
+ */
+userModule.updateUser = async (userId, payload) => {
+  try {
+    const response = await apiClient.patch(
+      API_ENDPOINTS.UPDATE_USER(userId),
+      payload,
+    );
+    return { data: response.data };
+  } catch (error) {
+    const handledError = handleApiError(error, {
+      context: "Update User",
+      userId,
+    });
+
+    if (error.status === 401) {
+      return { error: "Invalid or expired token" };
+    }
+    if (error.status === 403) {
+      return { error: "Insufficient permissions to update user" };
+    }
+    if (error.status === 404) {
+      return { error: "User not found" };
     }
 
     return { error: handledError.error };
@@ -141,7 +200,7 @@ userModule.RegisterCSV = async (formData) => {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-      }
+      },
     );
     return { data: response.data };
   } catch (error) {
@@ -177,7 +236,7 @@ userModule.DownloadUserCredsCSV = async (contestId) => {
       API_ENDPOINTS.DOWNLOAD_USER_CREDS_CSV(contestId),
       {
         responseType: "blob",
-      }
+      },
     );
 
     // Extract filename from Content-Disposition header if available

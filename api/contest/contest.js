@@ -57,7 +57,7 @@ contestModule.getContest = async (contestId) => {
 
   try {
     const response = await apiClient.get(
-      API_ENDPOINTS.CONTEST_BY_ID(numericId)
+      API_ENDPOINTS.CONTEST_BY_ID(numericId),
     );
     const contestData = response.data;
 
@@ -67,7 +67,7 @@ contestModule.getContest = async (contestId) => {
     }
     if (contestData.contest?.duration_seconds) {
       contestData.contest.duration_seconds = parseInt(
-        contestData.contest.duration_seconds
+        contestData.contest.duration_seconds,
       );
     }
 
@@ -127,7 +127,7 @@ contestModule.createContest = async (contestData) => {
  */
 contestModule.updateContest = async (contest) => {
   try {
-    const response = await apiClient.put(API_ENDPOINTS.CONTESTS, {
+    const response = await apiClient.patch(API_ENDPOINTS.CONTESTS, {
       id: contest.id,
       title: contest.title,
       description: contest.description,
@@ -218,7 +218,7 @@ contestModule.getContestProblems = async (contestId) => {
 
   try {
     const response = await apiClient.get(
-      API_ENDPOINTS.CONTEST_PROBLEMS(numericId)
+      API_ENDPOINTS.CONTEST_PROBLEMS(numericId),
     );
     const problems = response.data;
 
@@ -258,7 +258,7 @@ contestModule.getContestProblems = async (contestId) => {
 contestModule.getContestStandings = async (
   contestId,
   page = 1,
-  limit = 100
+  limit = 100,
 ) => {
   // Input validation
   if (!contestId) {
@@ -273,8 +273,8 @@ contestModule.getContestStandings = async (
   try {
     const response = await apiClient.get(
       `${API_ENDPOINTS.CONTEST_STANDINGS(
-        numericId
-      )}?page=${page}&limit=${limit}`
+        numericId,
+      )}?page=${page}&limit=${limit}`,
     );
 
     return { data: response.data };

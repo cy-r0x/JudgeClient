@@ -1,6 +1,6 @@
 "use client";
 
-import { MdDelete, MdPerson } from "react-icons/md";
+import { MdDelete, MdPerson, MdEdit } from "react-icons/md";
 import PageLoading from "@/components/LoadingSpinner/PageLoading";
 import EmptyState from "@/components/EmptyState/EmptyState";
 
@@ -94,13 +94,24 @@ export default function SettersList({
                   {setter.username}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-300">
-                  <button
-                    onClick={() => onDelete(setter.userId)}
-                    className="text-red-400 hover:text-red-300 transition-colors flex items-center gap-1"
-                  >
-                    <MdDelete className="text-lg" />
-                    Delete
-                  </button>
+                  <div className="flex space-x-4">
+                    <button
+                      onClick={() =>
+                        window.open(`/admin/users/${setter.id}`, "_blank")
+                      }
+                      className="text-blue-400 hover:text-blue-300 transition-colors flex items-center gap-1"
+                    >
+                      <MdEdit className="text-lg" />
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => onDelete(setter.userId)}
+                      className="text-red-400 hover:text-red-300 transition-colors flex items-center gap-1"
+                    >
+                      <MdDelete className="text-lg" />
+                      Delete
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}

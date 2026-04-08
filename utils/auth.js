@@ -1,6 +1,7 @@
 /**
  * Authentication utilities for token and user management
  */
+import { jwtDecode } from "jwt-decode";
 import { STORAGE_KEYS, USER_ROLES } from "./constants";
 
 /**
@@ -67,7 +68,21 @@ export const getUserRole = () => {
  */
 export const getUserId = () => {
   const user = getUser();
-  return user?.id || null;
+  if (user?.id) return user.id;
+  if (user?.userId) return user.userId;
+  if (user?.user_id) return user.user_id;
+
+  if (user?.access_token) {
+    try {
+      const decoded = jwtDecode(user.access_token);
+      return (
+        decoded.id || decoded.user_id || decoded.userId || decoded.sub || null
+      );
+    } catch (e) {
+      console.error("Error decoding token for ID", e);
+    }
+  }
+  return null;
 };
 
 /**

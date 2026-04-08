@@ -8,7 +8,7 @@ import { USER_ROLES } from "@/utils/constants";
 import { useRouter } from "next/navigation";
 
 function Navbar() {
-  const { isAuthenticated, user, logout, role } = useAuth();
+  const { isAuthenticated, user, logout, role, userId } = useAuth();
   const pathname = usePathname();
 
   const handleLogout = () => {
@@ -52,6 +52,16 @@ function Navbar() {
                     </li>
                   </>
                 )}
+
+              {isAuthenticated() && role === USER_ROLES.ADMIN && userId && (
+                <li>
+                  <Link href={`/admin/users/${userId}`} key={"profile"}>
+                    <p className="hover:text-orange-500 transition-colors">
+                      Profile
+                    </p>
+                  </Link>
+                </li>
+              )}
 
               {isAuthenticated() && role === USER_ROLES.USER && (
                 <>

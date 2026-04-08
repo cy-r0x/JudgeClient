@@ -43,6 +43,8 @@ export const API_ENDPOINTS = {
 
   // Users
   CONTEST_USERS: (contestId) => `/api/users/${contestId}`,
+  UPDATE_USER: (userId) => `/api/users/${userId}`,
+  USER_INFO: (userId) => `/api/users/info/${userId}`,
   SETTERS: () => "/api/users/setter",
   REGISTER_CSV: "/api/users/register/csv",
   DOWNLOAD_USER_CREDS_CSV: (contestId) =>

@@ -13,6 +13,7 @@ import {
   isAuthenticated as checkAuth,
   getUserRole,
   getUsername,
+  getUserId,
 } from "@/utils/auth";
 
 const AuthContext = createContext(undefined);
@@ -116,7 +117,7 @@ export const AuthProvider = ({ children }) => {
     hasAnyRole,
     role: user?.role || null,
     username: user?.username || null,
-    userId: user?.id || null,
+    userId: getUserId(),
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

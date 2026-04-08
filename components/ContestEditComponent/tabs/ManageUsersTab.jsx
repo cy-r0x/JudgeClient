@@ -5,6 +5,7 @@ import Button from "@/components/ButtonComponent/Button";
 import {
   MdAdd,
   MdDelete,
+  MdEdit,
   MdSearch,
   MdPersonAdd,
   MdUpload,
@@ -49,7 +50,7 @@ export default function ManageUsersTab({
     try {
       setLoading(true);
       const { data, error } = await userModule.getContestUsers(
-        contestData.contest.id
+        contestData.contest.id,
       );
 
       if (error) {
@@ -148,7 +149,7 @@ export default function ManageUsersTab({
       showNotification(
         error.response?.data?.message ||
           "Failed to delete user. Please try again.",
-        "error"
+        "error",
       );
     } finally {
       setLoading(false);
@@ -234,7 +235,7 @@ export default function ManageUsersTab({
       setLoading(true);
 
       const { data, error, filename } = await userModule.DownloadUserCredsCSV(
-        contestData.contest.id
+        contestData.contest.id,
       );
 
       if (error) {
@@ -246,7 +247,7 @@ export default function ManageUsersTab({
         link.href = url;
         link.setAttribute(
           "download",
-          filename || `contest_${contestData.contest.id}_users.csv`
+          filename || `contest_${contestData.contest.id}_users.csv`,
         );
         document.body.appendChild(link);
         link.click();
@@ -255,7 +256,7 @@ export default function ManageUsersTab({
 
         showNotification(
           "User credentials CSV downloaded successfully!",
-          "success"
+          "success",
         );
       }
     } catch (error) {
@@ -270,7 +271,7 @@ export default function ManageUsersTab({
     (user) =>
       user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (user.full_name &&
-        user.full_name.toLowerCase().includes(searchTerm.toLowerCase()))
+        user.full_name.toLowerCase().includes(searchTerm.toLowerCase())),
   );
 
   return (
@@ -612,14 +613,26 @@ export default function ManageUsersTab({
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-300">
-                      <button
-                        onClick={() => handleRemoveUser(user.id)}
-                        className="text-red-400 hover:text-red-300 transition-colors flex items-center space-x-1"
-                        disabled={loading}
-                      >
-                        <MdDelete />
-                        <span>Remove</span>
-                      </button>
+                      <div className="flex space-x-4">
+                        <button
+                          onClick={() =>
+                            window.open(`/admin/users/${user.id}`, "_blank")
+                          }
+                          className="text-blue-400 hover:text-blue-300 transition-colors flex items-center space-x-1"
+                          disabled={loading}
+                        >
+                          <MdEdit />
+                          <span>Edit</span>
+                        </button>
+                        <button
+                          onClick={() => handleRemoveUser(user.id)}
+                          className="text-red-400 hover:text-red-300 transition-colors flex items-center space-x-1"
+                          disabled={loading}
+                        >
+                          <MdDelete />
+                          <span>Remove</span>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

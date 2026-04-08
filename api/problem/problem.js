@@ -27,7 +27,7 @@ problemModule.getProblem = async (problemId) => {
 
   try {
     const response = await apiClient.get(
-      API_ENDPOINTS.PROBLEM_BY_ID(numericId)
+      API_ENDPOINTS.PROBLEM_BY_ID(numericId),
     );
     const problemData = response.data;
 
@@ -86,7 +86,7 @@ problemModule.updateProblem = async (problem) => {
       return JSON.stringify(content);
     };
 
-    const response = await apiClient.put(API_ENDPOINTS.PROBLEMS, {
+    const response = await apiClient.patch(API_ENDPOINTS.PROBLEMS, {
       id: problem.id,
       title: problem.title,
       slug: problem.slug,
@@ -160,7 +160,7 @@ problemModule.addTestCase = async (testCase) => {
 problemModule.deleteTestCase = async (testCaseId) => {
   try {
     const response = await apiClient.delete(
-      API_ENDPOINTS.TESTCASE_BY_ID(testCaseId)
+      API_ENDPOINTS.TESTCASE_BY_ID(testCaseId),
     );
 
     return { data: response.data };
