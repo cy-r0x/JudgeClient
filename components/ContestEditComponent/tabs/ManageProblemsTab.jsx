@@ -32,7 +32,7 @@ export default function ManageProblemsTab({
     try {
       setLoading(true);
       const { data, error } = await contestModule.getContestProblems(
-        contestData.contest.id
+        contestData.contest.id,
       );
 
       if (error) {
@@ -51,19 +51,16 @@ export default function ManageProblemsTab({
   const handleAddProblem = async (e) => {
     e.preventDefault();
 
-    if (!newProblem.problemId) {
+    const problemId = newProblem.problemId.trim();
+    if (!problemId) {
       showNotification("Please enter a problem ID", "error");
       return;
     }
 
-    const problemId = parseInt(newProblem.problemId);
-    if (isNaN(problemId) || problemId <= 0) {
-      showNotification("Please enter a valid problem ID", "error");
-      return;
-    }
-
     // Check if problem already exists in contest
-    const exists = contestProblems.some((p) => p.problem_id === problemId);
+    const exists = contestProblems.some(
+      (p) => String(p.problem_id) === problemId,
+    );
     if (exists) {
       showNotification("Problem already exists in this contest", "error");
       return;
@@ -104,7 +101,7 @@ export default function ManageProblemsTab({
       // TODO: Implement remove problem API call when available
       // For now, just remove from local state
       setContestProblems((prev) =>
-        prev.filter((p) => p.problem_id !== problemId)
+        prev.filter((p) => String(p.problem_id) !== String(problemId)),
       );
 
       showNotification("Problem removed successfully!", "success");
@@ -127,9 +124,11 @@ export default function ManageProblemsTab({
       setContestProblems((prev) =>
         prev
           .map((p) =>
-            p.problem_id === problemId ? { ...p, index: parseInt(newIndex) } : p
+            String(p.problem_id) === String(problemId)
+              ? { ...p, index: parseInt(newIndex, 10) }
+              : p,
           )
-          .sort((a, b) => a.index - b.index)
+          .sort((a, b) => a.index - b.index),
       );
 
       showNotification("Problem order updated!", "success");
@@ -144,7 +143,7 @@ export default function ManageProblemsTab({
   const filteredProblems = contestProblems.filter(
     (problem) =>
       problem.problem_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      problem.problem_id.toString().includes(searchTerm)
+      problem.problem_id.toString().includes(searchTerm),
   );
 
   const getNextIndex = () => {
@@ -185,7 +184,7 @@ export default function ManageProblemsTab({
                   Problem ID
                 </label>
                 <input
-                  type="number"
+                  type="text"
                   id="problemId"
                   value={newProblem.problemId}
                   onChange={(e) =>
@@ -196,7 +195,6 @@ export default function ManageProblemsTab({
                   }
                   className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
                   placeholder="Enter problem ID"
-                  min="1"
                   disabled={loading}
                   required
                 />

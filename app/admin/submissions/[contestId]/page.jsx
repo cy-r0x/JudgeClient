@@ -47,7 +47,7 @@ export default function AdminSubmissions({ params }) {
         contestId,
         currentPage,
         limit,
-        verdict || undefined
+        verdict || undefined,
       );
 
       if (error) {
@@ -306,7 +306,7 @@ export default function AdminSubmissions({ params }) {
                   <td className="py-3 px-4 text-blue-400 hover:underline">
                     <Link href={`/contests/${contestId}/${item.problem_id}`}>
                       {String.fromCharCode(
-                        "A".charCodeAt(0) + item.problem_index - 1
+                        "A".charCodeAt(0) + item.problem_index - 1,
                       )}
                     </Link>
                   </td>
@@ -323,7 +323,7 @@ export default function AdminSubmissions({ params }) {
                       </span>
                       <span
                         className={`font-medium text-sm ${getVerdictColor(
-                          item.verdict
+                          item.verdict,
                         )}`}
                       >
                         {getVerdictName(item.verdict)}

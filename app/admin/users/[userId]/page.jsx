@@ -63,7 +63,9 @@ function EditUserPage({ params }) {
             clan: data.clan || "",
             room_no: data.roomNo || "",
             pc_no: data.pcNo || "",
-            allowed_contest: data.allowedContest || "",
+            allowed_contest: data.allowedContest
+              ? String(data.allowedContest)
+              : "",
           });
         }
       } catch (err) {
@@ -98,7 +100,7 @@ function EditUserPage({ params }) {
     if (formData.room_no) payload.room_no = formData.room_no;
     if (formData.pc_no) payload.pc_no = formData.pc_no;
     if (formData.allowed_contest)
-      payload.allowed_contest = parseInt(formData.allowed_contest, 10);
+      payload.allowed_contest = formData.allowed_contest.trim();
 
     if (Object.keys(payload).length === 0) {
       setError("Please provide at least one field to update.");
@@ -258,10 +260,10 @@ function EditUserPage({ params }) {
 
               <div>
                 <label className="block text-sm font-medium text-zinc-300 mb-2">
-                  Allowed Contest (ID)
+                  Allowed Contest (UUID)
                 </label>
                 <input
-                  type="number"
+                  type="text"
                   name="allowed_contest"
                   value={formData.allowed_contest}
                   onChange={handleInputChange}
