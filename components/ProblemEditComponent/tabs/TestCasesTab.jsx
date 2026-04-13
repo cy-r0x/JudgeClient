@@ -14,49 +14,39 @@ export default function TestCasesTab({
 }) {
   const handleAddTestCase = (type) => {
     setCurrentTestCaseType(type);
-    setCurrentTestCase({ input: "", output: "" });
+    setCurrentTestCase({ id: null, input: "", output: "" });
     setEditingIndex(-1); // -1 indicates we're adding a new test case
     setShowTestCaseModal(true);
   };
 
-  const handleEditTestCase = (type, index) => {
-    const sampleTestCases = problemData.test_cases.filter((tc) => tc.is_sample);
-    const regularTestCases = problemData.test_cases.filter(
-      (tc) => !tc.is_sample
-    );
-    const testCases = type === "sample" ? sampleTestCases : regularTestCases;
+  const handleEditTestCase = (type, testCase, index) => {
+    if (!testCase) {
+      return;
+    }
 
     setCurrentTestCaseType(type);
     setCurrentTestCase({
-      input: testCases[index].input,
-      output: testCases[index].expected_output,
+      id: testCase.id ?? null,
+      input: testCase.input,
+      output: testCase.expected_output,
     });
     setEditingIndex(index);
     setShowTestCaseModal(true);
   };
 
-  const handleDeleteTestCase = async (type, index) => {
-    const filteredTestCases = problemData.test_cases.filter((tc) =>
-      type === "sample" ? tc.is_sample : !tc.is_sample
-    );
-    const testCaseToDelete = filteredTestCases[index];
+  const handleDeleteTestCase = async (type, testCase) => {
+    if (!testCase) {
+      return;
+    }
 
-    // Find the actual index in the original array
-    const actualIndex = problemData.test_cases.findIndex(
-      (tc) =>
-        tc.input === testCaseToDelete.input &&
-        tc.expected_output === testCaseToDelete.expected_output &&
-        tc.is_sample === testCaseToDelete.is_sample
-    );
-
-    const testCaseId = problemData.test_cases[actualIndex]?.id;
+    const testCaseId = testCase.id;
 
     // If the test case has an ID, delete it from the backend
     if (testCaseId) {
       const confirmDelete = window.confirm(
         `Are you sure you want to delete this ${
           type === "sample" ? "sample" : "regular"
-        } test case?`
+        } test case?`,
       );
 
       if (!confirmDelete) {
@@ -75,27 +65,27 @@ export default function TestCasesTab({
           // Remove from local state after successful deletion
           setProblemData((prev) => ({
             ...prev,
-            test_cases: prev.test_cases.filter((_, i) => i !== actualIndex),
+            test_cases: prev.test_cases.filter((tc) => tc.id !== testCaseId),
           }));
           showNotification?.(
             `${
               type === "sample" ? "Sample" : "Regular"
             } test case deleted successfully!`,
-            "success"
+            "success",
           );
         }
       } catch (error) {
         console.error("Error deleting test case:", error);
         showNotification?.(
           "Failed to delete test case. Please try again.",
-          "error"
+          "error",
         );
       }
     } else {
       // If no ID, just remove from local state (shouldn't happen with new API flow)
       setProblemData((prev) => ({
         ...prev,
-        test_cases: prev.test_cases.filter((_, i) => i !== actualIndex),
+        test_cases: prev.test_cases.filter((tc) => tc !== testCase),
       }));
     }
   };
@@ -131,8 +121,8 @@ export default function TestCasesTab({
                       output: testCase.expected_output,
                     }}
                     index={index}
-                    onEdit={() => handleEditTestCase("sample", index)}
-                    onDelete={() => handleDeleteTestCase("sample", index)}
+                    onEdit={() => handleEditTestCase("sample", testCase, index)}
+                    onDelete={() => handleDeleteTestCase("sample", testCase)}
                   />
                 ))}
             </div>
@@ -167,8 +157,10 @@ export default function TestCasesTab({
                       output: testCase.expected_output,
                     }}
                     index={index}
-                    onEdit={() => handleEditTestCase("regular", index)}
-                    onDelete={() => handleDeleteTestCase("regular", index)}
+                    onEdit={() =>
+                      handleEditTestCase("regular", testCase, index)
+                    }
+                    onDelete={() => handleDeleteTestCase("regular", testCase)}
                   />
                 ))}
             </div>

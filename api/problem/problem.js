@@ -146,6 +146,52 @@ problemModule.addTestCase = async (testCase) => {
 };
 
 /**
+ * Update a test case
+ * @param {number|string} testCaseId - Test case ID
+ * @param {Object} testCase - Test case data
+ * @param {string} testCase.input - Test case input
+ * @param {string} testCase.expected_output - Expected output
+ * @param {boolean} testCase.is_sample - Whether this is a sample test case
+ * @returns {Promise<{data?: Object, error?: string}>}
+ */
+problemModule.updateTestCase = async (testCaseId, testCase) => {
+  const normalizedTestCaseId = normalizeId(testCaseId);
+  if (!normalizedTestCaseId) {
+    return { error: "Test case ID is required" };
+  }
+
+  try {
+    const response = await apiClient.patch(
+      API_ENDPOINTS.TESTCASE_BY_ID(normalizedTestCaseId),
+      {
+        input: testCase.input,
+        expected_output: testCase.expected_output,
+        is_sample: testCase.is_sample,
+      },
+    );
+
+    return { data: response.data };
+  } catch (error) {
+    const handledError = handleApiError(error, {
+      context: "Update Test Case",
+      testCaseId: normalizedTestCaseId,
+    });
+
+    if (error.status === 401) {
+      return { error: "Invalid or expired token" };
+    }
+    if (error.status === 400) {
+      return { error: "Invalid test case data" };
+    }
+    if (error.status === 404) {
+      return { error: "Test case not found" };
+    }
+
+    return { error: handledError.error };
+  }
+};
+
+/**
  * Delete a test case
  * @param {number|string} testCaseId - Test case ID
  * @returns {Promise<{data?: Object, error?: string}>}
