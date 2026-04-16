@@ -20,8 +20,8 @@ import { API_ENDPOINTS } from "@/utils/constants";
 export const compileAndRun = async (payload) => {
   payload = {
     ...payload,
-    problem_id: payload.problem_id ? parseInt(payload.problem_id) : null,
-    contest_id: payload.contest_id ? parseInt(payload.contest_id) : null,
+    problem_id: payload.problem_id ? String(payload.problem_id) : null,
+    contest_id: payload.contest_id ? String(payload.contest_id) : null,
   };
   return handleApiResponse(apiClient.post(API_ENDPOINTS.ENGINE_RUN, payload));
 };

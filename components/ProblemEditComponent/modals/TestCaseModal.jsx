@@ -55,42 +55,59 @@ export default function TestCaseModal({
             `${
               testCaseType === "sample" ? "Sample" : "Regular"
             } test case added successfully!`,
-            "success"
+            "success",
           );
         }
       } else {
-        // Update existing test case (local update only for now)
-        // Note: You might want to add an API endpoint for updating test cases
-        setProblemData((prev) => {
-          const filteredTestCases = prev.test_cases.filter((tc) =>
-            testCaseType === "sample" ? tc.is_sample : !tc.is_sample
+        const testCaseId = testCase?.id;
+        if (!testCaseId) {
+          showNotification?.(
+            "Unable to update test case: missing ID.",
+            "error",
           );
-          const targetTestCase = filteredTestCases[editingIndex];
+          setIsSaving(false);
+          return;
+        }
 
-          // Find the actual index in the original array
-          const actualIndex = prev.test_cases.findIndex(
-            (tc) =>
-              tc.input === targetTestCase.input &&
-              tc.expected_output === targetTestCase.expected_output &&
-              tc.is_sample === targetTestCase.is_sample
-          );
-
-          const updatedTestCases = prev.test_cases.map((tc, index) =>
-            index === actualIndex
-              ? { ...tc, input, expected_output: output }
-              : tc
-          );
-
-          return {
-            ...prev,
-            test_cases: updatedTestCases,
-          };
+        const { data, error } = await problemModule.updateTestCase(testCaseId, {
+          input,
+          expected_output: output,
+          is_sample: testCaseType === "sample",
         });
+
+        if (error) {
+          showNotification?.(error, "error");
+          setIsSaving(false);
+          return;
+        }
+
+        const updatedFromApi =
+          data && typeof data === "object"
+            ? {
+                ...data,
+                id: data.id ?? testCaseId,
+                input: data.input ?? input,
+                expected_output: data.expected_output ?? output,
+                is_sample: data.is_sample ?? testCaseType === "sample",
+              }
+            : {
+                id: testCaseId,
+                input,
+                expected_output: output,
+                is_sample: testCaseType === "sample",
+              };
+
+        setProblemData((prev) => ({
+          ...prev,
+          test_cases: prev.test_cases.map((tc) =>
+            tc.id === testCaseId ? { ...tc, ...updatedFromApi } : tc,
+          ),
+        }));
         showNotification?.(
           `${
             testCaseType === "sample" ? "Sample" : "Regular"
           } test case updated!`,
-          "success"
+          "success",
         );
       }
 
@@ -99,7 +116,7 @@ export default function TestCaseModal({
       console.error("Error saving test case:", error);
       showNotification?.(
         "Failed to save test case. Please try again.",
-        "error"
+        "error",
       );
     } finally {
       setIsSaving(false);

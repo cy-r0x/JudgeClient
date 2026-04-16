@@ -7,12 +7,16 @@ import { handleApiError } from "@/utils/errorHandler";
 import { API_ENDPOINTS } from "@/utils/constants";
 
 const submissionModule = {};
+const normalizeId = (id) => {
+  const normalized = String(id ?? "").trim();
+  return normalized || undefined;
+};
 
 /**
  * Submit a solution
  * @param {Object} params - Submission parameters
- * @param {number} params.problem_id - Problem ID
- * @param {number} params.contest_id - Contest ID (optional)
+ * @param {string} params.problem_id - Problem ID
+ * @param {string} params.contest_id - Contest ID (optional)
  * @param {string} params.source_code - Source code
  * @param {string} params.language - Programming language
  * @returns {Promise<{data?: Object, error?: string}>}
@@ -25,8 +29,8 @@ submissionModule.submitSubmission = async ({
 }) => {
   try {
     const response = await apiClient.post(API_ENDPOINTS.SUBMISSIONS, {
-      problem_id: problem_id ? parseInt(problem_id) : undefined,
-      contest_id: contest_id ? parseInt(contest_id) : undefined,
+      problem_id: normalizeId(problem_id),
+      contest_id: normalizeId(contest_id),
       source_code,
       language,
     });
@@ -61,7 +65,7 @@ submissionModule.getSubmission = async (submissionId) => {
 
   try {
     const response = await apiClient.get(
-      API_ENDPOINTS.SUBMISSION_BY_ID(numericId)
+      API_ENDPOINTS.SUBMISSION_BY_ID(numericId),
     );
 
     return { data: response.data };
@@ -132,20 +136,15 @@ submissionModule.getSubmissionsByContest = async (
   contestId,
   page = 1,
   limit,
-  verdict
+  verdict,
 ) => {
   // Input validation
   if (!contestId) {
     return { error: "Contest ID is required" };
   }
 
-  const numericId = parseInt(contestId);
-  if (isNaN(numericId) || numericId <= 0) {
-    return { error: "Invalid contest ID format" };
-  }
-
   try {
-    let url = API_ENDPOINTS.SUBMISSIONS_BY_CONTEST(numericId, page);
+    let url = API_ENDPOINTS.SUBMISSIONS_BY_CONTEST(contestId, page);
     const queryParams = [];
     if (limit) queryParams.push(`limit=${limit}`);
     if (verdict) queryParams.push(`verdict=${verdict}`);

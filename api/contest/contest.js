@@ -7,6 +7,7 @@ import { handleApiError } from "@/utils/errorHandler";
 import { API_ENDPOINTS } from "@/utils/constants";
 
 const contestModule = {};
+const normalizeId = (id) => String(id ?? "").trim();
 
 /**
  * Get all contests
@@ -41,30 +42,22 @@ contestModule.getContests = async () => {
 
 /**
  * Get contest by ID
- * @param {number|string} contestId - Contest ID
+ * @param {string} contestId - Contest ID
  * @returns {Promise<{data?: Object, error?: string}>}
  */
 contestModule.getContest = async (contestId) => {
-  // Input validation
-  if (!contestId) {
+  const normalizedContestId = normalizeId(contestId);
+  if (!normalizedContestId) {
     return { error: "Contest ID is required" };
-  }
-
-  const numericId = parseInt(contestId);
-  if (isNaN(numericId) || numericId <= 0) {
-    return { error: "Invalid contest ID format" };
   }
 
   try {
     const response = await apiClient.get(
-      API_ENDPOINTS.CONTEST_BY_ID(numericId),
+      API_ENDPOINTS.CONTEST_BY_ID(normalizedContestId),
     );
     const contestData = response.data;
 
     // Ensure numeric fields are properly typed
-    if (contestData.contest?.id) {
-      contestData.contest.id = parseInt(contestData.contest.id);
-    }
     if (contestData.contest?.duration_seconds) {
       contestData.contest.duration_seconds = parseInt(
         contestData.contest.duration_seconds,
@@ -75,7 +68,7 @@ contestModule.getContest = async (contestId) => {
   } catch (error) {
     const handledError = handleApiError(error, {
       context: "Get Contest",
-      contestId,
+      contestId: normalizedContestId,
     });
 
     if (error.status === 401) {
@@ -161,23 +154,27 @@ contestModule.assignProblem = async (contestProblem) => {
     return { error: "Contest problem data is required" };
   }
 
-  if (!contestProblem.contest_id || !contestProblem.problem_id) {
+  const normalizedContestId = normalizeId(contestProblem.contest_id);
+  const normalizedProblemId = normalizeId(contestProblem.problem_id);
+  if (!normalizedContestId || !normalizedProblemId) {
     return { error: "Contest ID and Problem ID are required" };
   }
 
   try {
     const response = await apiClient.post(API_ENDPOINTS.CONTEST_ASSIGN, {
-      contest_id: parseInt(contestProblem.contest_id),
-      problem_id: parseInt(contestProblem.problem_id),
-      index: contestProblem.index ? parseInt(contestProblem.index) : undefined,
+      contest_id: normalizedContestId,
+      problem_id: normalizedProblemId,
+      index: contestProblem.index
+        ? parseInt(contestProblem.index, 10)
+        : undefined,
     });
 
     return { data: response.data };
   } catch (error) {
     const handledError = handleApiError(error, {
       context: "Assign Problem to Contest",
-      contestId: contestProblem.contest_id,
-      problemId: contestProblem.problem_id,
+      contestId: normalizedContestId,
+      problemId: normalizedProblemId,
     });
 
     if (error.status === 401) {
@@ -202,23 +199,18 @@ contestModule.assignProblem = async (contestProblem) => {
 
 /**
  * Get problems for a contest
- * @param {number|string} contestId - Contest ID
+ * @param {string} contestId - Contest ID
  * @returns {Promise<{data?: Array, error?: string}>}
  */
 contestModule.getContestProblems = async (contestId) => {
-  // Input validation
-  if (!contestId) {
+  const normalizedContestId = normalizeId(contestId);
+  if (!normalizedContestId) {
     return { error: "Contest ID is required" };
-  }
-
-  const numericId = parseInt(contestId);
-  if (isNaN(numericId) || numericId <= 0) {
-    return { error: "Invalid contest ID format" };
   }
 
   try {
     const response = await apiClient.get(
-      API_ENDPOINTS.CONTEST_PROBLEMS(numericId),
+      API_ENDPOINTS.CONTEST_PROBLEMS(normalizedContestId),
     );
     const problems = response.data;
 
@@ -231,7 +223,7 @@ contestModule.getContestProblems = async (contestId) => {
   } catch (error) {
     const handledError = handleApiError(error, {
       context: "Get Contest Problems",
-      contestId,
+      contestId: normalizedContestId,
     });
 
     if (error.status === 401) {
@@ -250,7 +242,7 @@ contestModule.getContestProblems = async (contestId) => {
 
 /**
  * Get standings for a contest
- * @param {number|string} contestId - Contest ID
+ * @param {string} contestId - Contest ID
  * @param {number} page - Page number (default: 1)
  * @param {number} limit - Items per page (default: 100)
  * @returns {Promise<{data?: Object, error?: string}>}
@@ -260,20 +252,15 @@ contestModule.getContestStandings = async (
   page = 1,
   limit = 100,
 ) => {
-  // Input validation
-  if (!contestId) {
+  const normalizedContestId = normalizeId(contestId);
+  if (!normalizedContestId) {
     return { error: "Contest ID is required" };
-  }
-
-  const numericId = parseInt(contestId);
-  if (isNaN(numericId) || numericId <= 0) {
-    return { error: "Invalid contest ID format" };
   }
 
   try {
     const response = await apiClient.get(
       `${API_ENDPOINTS.CONTEST_STANDINGS(
-        numericId,
+        normalizedContestId,
       )}?page=${page}&limit=${limit}`,
     );
 
@@ -281,7 +268,7 @@ contestModule.getContestStandings = async (
   } catch (error) {
     const handledError = handleApiError(error, {
       context: "Get Contest Standings",
-      contestId,
+      contestId: normalizedContestId,
     });
 
     if (error.status === 401) {
