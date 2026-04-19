@@ -5,7 +5,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { usePathname } from "next/navigation";
 import Button from "../ButtonComponent/Button";
 import { USER_ROLES } from "@/utils/constants";
-import { useRouter } from "next/navigation";
 
 function Navbar() {
   const { isAuthenticated, user, logout, role, userId } = useAuth();
@@ -15,12 +14,10 @@ function Navbar() {
     logout();
   };
 
-  // Check if user is on a specific contest page (not just /contests)
-  const isOnContestPage = pathname?.match(/^\/contests\/\d+/);
-  // Extract contest ID if on contest page
-  const contestId = isOnContestPage
-    ? pathname.match(/^\/contests\/(\d+)/)?.[1]
-    : null;
+  // Match contest detail routes like /contests/:contestId/* where contestId can be UUID or numeric.
+  const contestPathMatch = pathname?.match(/^\/contests?\/([^/]+)/);
+  const contestId = contestPathMatch?.[1] || null;
+  const isOnContestPage = Boolean(contestId);
 
   return (
     <>
