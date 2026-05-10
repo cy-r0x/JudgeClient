@@ -10,9 +10,10 @@ export default function CreateContestModal({ isOpen, onClose }) {
   const router = useRouter();
   const [formData, setFormData] = useState({
     title: "",
+    userPrefix: "",
     description: "",
-    start_time: "",
-    duration_seconds: "",
+    startTime: "",
+    durationSeconds: "",
   });
   const [loading, setLoading] = useState(false);
   const [notification, setNotification] = useState({
@@ -47,14 +48,19 @@ export default function CreateContestModal({ isOpen, onClose }) {
       return;
     }
 
-    if (!formData.start_time) {
+    if (!formData.userPrefix.trim()) {
+      showNotification("User prefix is required", "error");
+      return;
+    }
+
+    if (!formData.startTime) {
       showNotification("Start time is required", "error");
       return;
     }
 
     if (
-      !formData.duration_seconds ||
-      parseInt(formData.duration_seconds) <= 0
+      !formData.durationSeconds ||
+      parseInt(formData.durationSeconds) <= 0
     ) {
       showNotification("Valid duration is required", "error");
       return;
@@ -66,9 +72,10 @@ export default function CreateContestModal({ isOpen, onClose }) {
       // Convert duration from minutes to seconds and format start_time to RFC3339
       const contestData = {
         title: formData.title,
+        userPrefix: formData.userPrefix,
         description: formData.description,
-        start_time: new Date(formData.start_time).toISOString(),
-        duration_seconds: parseInt(formData.duration_seconds) * 60,
+        startTime: new Date(formData.startTime).toISOString(),
+        durationSeconds: parseInt(formData.durationSeconds) * 60,
       };
 
       const { data, error } = await contestModule.createContest(contestData);
@@ -141,6 +148,29 @@ export default function CreateContestModal({ isOpen, onClose }) {
 
           <div>
             <label
+              htmlFor="userPrefix"
+              className="block text-sm font-medium text-zinc-300 mb-2"
+            >
+              User Prefix *
+            </label>
+            <input
+              type="text"
+              id="userPrefix"
+              name="userPrefix"
+              value={formData.userPrefix}
+              onChange={handleInputChange}
+              className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+              placeholder="e.g., contest2024"
+              disabled={loading}
+              required
+            />
+            <p className="mt-1 text-xs text-zinc-400">
+              Unique prefix for auto-generated contest usernames
+            </p>
+          </div>
+
+          <div>
+            <label
               htmlFor="description"
               className="block text-sm font-medium text-zinc-300 mb-2"
             >
@@ -160,16 +190,16 @@ export default function CreateContestModal({ isOpen, onClose }) {
 
           <div>
             <label
-              htmlFor="start_time"
+              htmlFor="startTime"
               className="block text-sm font-medium text-zinc-300 mb-2"
             >
               Start Time
             </label>
             <input
               type="datetime-local"
-              id="start_time"
-              name="start_time"
-              value={formData.start_time}
+              id="startTime"
+              name="startTime"
+              value={formData.startTime}
               onChange={handleInputChange}
               className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
               disabled={loading}
@@ -179,16 +209,16 @@ export default function CreateContestModal({ isOpen, onClose }) {
 
           <div>
             <label
-              htmlFor="duration_seconds"
+              htmlFor="durationSeconds"
               className="block text-sm font-medium text-zinc-300 mb-2"
             >
               Duration (Minutes)
             </label>
             <input
               type="number"
-              id="duration_seconds"
-              name="duration_seconds"
-              value={formData.duration_seconds}
+              id="durationSeconds"
+              name="durationSeconds"
+              value={formData.durationSeconds}
               onChange={handleInputChange}
               min="1"
               className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-orange-500"

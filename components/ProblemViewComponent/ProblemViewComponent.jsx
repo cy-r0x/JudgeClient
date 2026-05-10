@@ -10,17 +10,17 @@ export default function ProblemViewComponent({ problem, contestId }) {
     [problem.statement]
   );
   const inputDescriptionHtml = useMemo(
-    () => convertTiptapToHtml(problem.input_statement),
-    [problem.input_statement]
+    () => convertTiptapToHtml(problem.inputStatement),
+    [problem.inputStatement]
   );
   const outputDescriptionHtml = useMemo(
-    () => convertTiptapToHtml(problem.output_statement),
-    [problem.output_statement]
+    () => convertTiptapToHtml(problem.outputStatement),
+    [problem.outputStatement]
   );
 
   // Filter sample test cases
-  const sampleTestCases = problem.test_cases
-    ? problem.test_cases.filter((tc) => tc.is_sample)
+  const sampleTestCases = problem.testCases
+    ? problem.testCases.filter((tc) => tc.isSample)
     : [];
 
   return (
@@ -58,8 +58,8 @@ export default function ProblemViewComponent({ problem, contestId }) {
 
         <div className="border border-zinc-800 p-2 rounded mb-4">
           <p className="font-medium">
-            Time Limit: {problem.time_limit}s | Memory Limit:{" "}
-            {problem.memory_limit}MB
+            Time Limit: {problem.timeLimit}s | Memory Limit:{" "}
+            {problem.memoryLimit}MB
           </p>
         </div>
 
@@ -118,11 +118,11 @@ export default function ProblemViewComponent({ problem, contestId }) {
                   <div className="relative">
                     <div className="bg-zinc-900/30 px-4 py-2 border-b border-zinc-800 flex items-center justify-between">
                       <h4 className="font-semibold text-sm h-8">Output</h4>
-                      <CopyButton text={sample.expected_output} />
+                      <CopyButton text={sample.expectedOutput} />
                     </div>
                     <div className="p-4">
                       <pre className="whitespace-pre-wrap text-sm font-mono overflow-x-auto">
-                        {sample.expected_output}
+                        {sample.expectedOutput}
                       </pre>
                     </div>
                   </div>

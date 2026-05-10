@@ -29,17 +29,17 @@ export default function ProblemEditComponent({ problemId }) {
     slug: "",
     title: "",
     statement: "",
-    input_statement: "",
-    output_statement: "",
-    time_limit: 1,
-    memory_limit: 256,
-    test_cases: [],
+    inputStatement: "",
+    outputStatement: "",
+    timeLimit: 1,
+    memoryLimit: 256,
+    testCases: [],
     solutions: [],
-    checker_type: "string",
-    checker_strict_space: false,
-    checker_precision: null,
+    checkerType: "string",
+    checkerStrictSpace: false,
+    checkerPrecision: null,
     created_by: 0,
-    created_at: "",
+    createdAt: "",
   });
   const [loading, setLoading] = useState(true);
 
@@ -65,12 +65,12 @@ export default function ProblemEditComponent({ problemId }) {
           setProblemData((prev) => ({
             ...prev,
             ...data,
-            checker_type: data.checker_type || "string",
-            checker_strict_space:
-              data.checker_strict_space !== undefined
-                ? data.checker_strict_space
+            checkerType: data.checkerType || "string",
+            checkerStrictSpace:
+              data.checkerStrictSpace !== undefined
+                ? data.checkerStrictSpace
                 : false,
-            checker_precision: data.checker_precision || null,
+            checkerPrecision: data.checkerPrecision || null,
           }));
         }
       } catch (error) {

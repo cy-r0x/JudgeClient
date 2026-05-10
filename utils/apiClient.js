@@ -13,42 +13,24 @@ const apiClient = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  timeout: 30000, // 30 seconds timeout
+  withCredentials: true,
+  timeout: 30000,
 });
 
 /**
- * Request interceptor to add authentication token
- */
-apiClient.interceptors.request.use(
-  (config) => {
-    // Only access localStorage on client side
-    if (typeof window !== "undefined") {
-      const user = localStorage.getItem("user");
-      if (user) {
-        try {
-          const userData = JSON.parse(user);
-          if (userData.access_token) {
-            config.headers.Authorization = `Bearer ${userData.access_token}`;
-          }
-        } catch (error) {
-          console.error("Error parsing user data from localStorage:", error);
-          // Clear invalid data
-          localStorage.removeItem("user");
-        }
-      }
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
-/**
- * Response interceptor to handle common errors
+ * Response interceptor to unwrap API response wrapper and handle errors
  */
 apiClient.interceptors.response.use(
   (response) => {
+    // Unwrap the server's APIResponse wrapper: { success, message, data }
+    if (
+      response.data &&
+      typeof response.data === "object" &&
+      "success" in response.data &&
+      "data" in response.data
+    ) {
+      response.data = response.data.data;
+    }
     return response;
   },
   (error) => {
@@ -65,7 +47,6 @@ apiClient.interceptors.response.use(
 
     // Handle authentication errors globally
     if (status === 401) {
-      // Clear invalid token and redirect to login
       if (typeof window !== "undefined") {
         localStorage.removeItem("user");
         window.location.href = "/login";
@@ -92,11 +73,9 @@ export const handleApiResponse = async (promise) => {
     const response = await promise;
     return { data: response.data };
   } catch (error) {
-    // If it's our custom error from interceptor
     if (error.error) {
       return { error: error.error, status: error.status };
     }
-    // Fallback for unexpected errors
     return {
       error: error.message || "An unexpected error occurred",
       status: error.status || null,

@@ -43,10 +43,10 @@ export function EditorSection({ problem, problemID }) {
     setNotification({ visible: false, message: "", type: "info" });
 
     const data = {
-      problem_id: problemID ? String(problemID) : null,
+      problemId: problemID ? String(problemID) : null,
       language: selectedLanguage,
-      source_code: code,
-      contest_id: null,
+      sourceCode: code,
+      contestId: null,
     };
 
     const { data: responseData, error } = await compileAndRun(data);

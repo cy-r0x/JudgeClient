@@ -28,7 +28,7 @@ export default function TestCasesTab({
     setCurrentTestCase({
       id: testCase.id ?? null,
       input: testCase.input,
-      output: testCase.expected_output,
+      output: testCase.expectedOutput,
     });
     setEditingIndex(index);
     setShowTestCaseModal(true);
@@ -65,7 +65,7 @@ export default function TestCasesTab({
           // Remove from local state after successful deletion
           setProblemData((prev) => ({
             ...prev,
-            test_cases: prev.test_cases.filter((tc) => tc.id !== testCaseId),
+            testCases: prev.testCases.filter((tc) => tc.id !== testCaseId),
           }));
           showNotification?.(
             `${
@@ -85,7 +85,7 @@ export default function TestCasesTab({
       // If no ID, just remove from local state (shouldn't happen with new API flow)
       setProblemData((prev) => ({
         ...prev,
-        test_cases: prev.test_cases.filter((tc) => tc !== testCase),
+        testCases: prev.testCases.filter((tc) => tc !== testCase),
       }));
     }
   };
@@ -109,16 +109,16 @@ export default function TestCasesTab({
             />
           </div>
 
-          {problemData.test_cases.filter((tc) => tc.is_sample).length > 0 ? (
+          {problemData.testCases.filter((tc) => tc.isSample).length > 0 ? (
             <div className="space-y-4">
-              {problemData.test_cases
-                .filter((tc) => tc.is_sample)
+              {problemData.testCases
+                .filter((tc) => tc.isSample)
                 .map((testCase, index) => (
                   <TestCaseItem
                     key={`sample-${testCase.id || index}`}
                     testCase={{
                       input: testCase.input,
-                      output: testCase.expected_output,
+                      output: testCase.expectedOutput,
                     }}
                     index={index}
                     onEdit={() => handleEditTestCase("sample", testCase, index)}
@@ -145,16 +145,16 @@ export default function TestCasesTab({
             />
           </div>
 
-          {problemData.test_cases.filter((tc) => !tc.is_sample).length > 0 ? (
+          {problemData.testCases.filter((tc) => !tc.isSample).length > 0 ? (
             <div className="space-y-4">
-              {problemData.test_cases
-                .filter((tc) => !tc.is_sample)
+              {problemData.testCases
+                .filter((tc) => !tc.isSample)
                 .map((testCase, index) => (
                   <TestCaseItem
                     key={`regular-${testCase.id || index}`}
                     testCase={{
                       input: testCase.input,
-                      output: testCase.expected_output,
+                      output: testCase.expectedOutput,
                     }}
                     index={index}
                     onEdit={() =>

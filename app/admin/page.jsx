@@ -97,7 +97,7 @@ function AdminPanel() {
     setSetterSuccess("");
     try {
       const response = await userModule.Register({
-        full_name: formData.name,
+        fullName: formData.name,
         username: formData.username,
         password: formData.password,
         role: "setter",

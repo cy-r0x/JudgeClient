@@ -16,11 +16,12 @@ export default function ContestEditComponent({ contestId }) {
     contest: {
       id: 0,
       title: "",
+      userPrefix: "",
       description: "",
-      start_time: "",
-      duration_seconds: 0,
+      startTime: "",
+      durationSeconds: 0,
       status: "",
-      created_at: "",
+      createdAt: "",
     },
     problems: [],
   });
@@ -101,7 +102,7 @@ export default function ContestEditComponent({ contestId }) {
       // Convert start_time to ISO format before sending
       const contestToUpdate = {
         ...contestData.contest,
-        start_time: new Date(contestData.contest.start_time).toISOString(),
+        startTime: new Date(contestData.contest.startTime).toISOString(),
       };
 
       const { data, error } = await contestModule.updateContest(

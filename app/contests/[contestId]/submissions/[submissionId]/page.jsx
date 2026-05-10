@@ -15,13 +15,13 @@ const normalizeSubmission = (submission) => ({
   username:
     submission?.username ?? submission?.user?.username ?? "Unknown user",
   problemId:
-    submission?.problemId ?? submission?.problem_id ?? submission?.problem?.id,
+    submission?.problemId ?? submission?.problemId ?? submission?.problem?.id,
   problemTitle:
     submission?.problem?.title ?? submission?.problemTitle ?? "Problem",
   contestId:
-    submission?.contestId ?? submission?.contest_id ?? submission?.contest?.id,
+    submission?.contestId ?? submission?.contestId ?? submission?.contest?.id,
   language: submission?.language ?? "",
-  sourceCode: submission?.sourceCode ?? submission?.source_code ?? "",
+  sourceCode: submission?.sourceCode ?? submission?.sourceCode ?? "",
   verdict: submission?.verdict ?? "",
   firstBlood: submission?.firstBlood ?? submission?.first_blood ?? false,
   executionTime:

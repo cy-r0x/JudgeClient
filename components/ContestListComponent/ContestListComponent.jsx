@@ -4,8 +4,8 @@ import StatusComponent from "../StatusComponent/StatusComponent";
 import { formatFullDate, formatDuration } from "@/utils/dateFormatter";
 
 function ContestListComponent({ data }) {
-  const durationText = data.duration_seconds
-    ? formatDuration(data.duration_seconds)
+  const durationText = data.durationSeconds
+    ? formatDuration(data.durationSeconds)
     : data.duration || "Unknown";
 
   return (
@@ -13,7 +13,7 @@ function ContestListComponent({ data }) {
       <div className="space-y-2">
         <p className="lg:text-xl font-semibold">{data.title}</p>
         <p className="text-sm lg:text-base">
-          Starting: {formatFullDate(data.start_time)}
+          Starting: {formatFullDate(data.startTime)}
         </p>
         <p className="text-sm lg:text-base">
           Duration: <span className="font-semibold">{durationText}</span>

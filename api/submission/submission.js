@@ -15,23 +15,19 @@ const normalizeId = (id) => {
 /**
  * Submit a solution
  * @param {Object} params - Submission parameters
- * @param {string} params.problem_id - Problem ID
- * @param {string} params.contest_id - Contest ID (optional)
- * @param {string} params.source_code - Source code
- * @param {string} params.language - Programming language
  * @returns {Promise<{data?: Object, error?: string}>}
  */
 submissionModule.submitSubmission = async ({
-  problem_id,
-  contest_id,
-  source_code,
+  problemId,
+  contestId,
+  sourceCode,
   language,
 }) => {
   try {
     const response = await apiClient.post(API_ENDPOINTS.SUBMISSIONS, {
-      problem_id: normalizeId(problem_id),
-      contest_id: normalizeId(contest_id),
-      source_code,
+      problemId: normalizeId(problemId),
+      contestId: normalizeId(contestId),
+      sourceCode,
       language,
     });
 
@@ -39,7 +35,7 @@ submissionModule.submitSubmission = async ({
   } catch (error) {
     const handledError = handleApiError(error, {
       context: "Submit Solution",
-      problemId: problem_id,
+      problemId,
       language,
     });
 
@@ -53,7 +49,6 @@ submissionModule.submitSubmission = async ({
  * @returns {Promise<{data?: Object, error?: string}>}
  */
 submissionModule.getSubmission = async (submissionId) => {
-  // Input validation
   if (!submissionId) {
     return { error: "Submission ID is required" };
   }
@@ -92,9 +87,6 @@ submissionModule.getSubmission = async (submissionId) => {
 /**
  * Get all submissions for the current user
  * @param {Object} params - Query parameters
- * @param {number} params.page - Page number (optional, default: 1)
- * @param {number} params.limit - Results per page (optional, 20-100)
- * @param {string} params.verdict - Filter by verdict (optional)
  * @returns {Promise<{data?: Object, error?: string}>}
  */
 submissionModule.getSubmissions = async ({ page = 1, limit, verdict } = {}) => {
@@ -138,7 +130,6 @@ submissionModule.getSubmissionsByContest = async (
   limit,
   verdict,
 ) => {
-  // Input validation
   if (!contestId) {
     return { error: "Contest ID is required" };
   }

@@ -5,23 +5,23 @@ export default function CheckerTab({ problemData, setProblemData }) {
     const newType = e.target.value;
     setProblemData((prev) => ({
       ...prev,
-      checker_type: newType,
-      checker_precision:
-        newType === "float" ? prev.checker_precision || "1e-6" : null,
+      checkerType: newType,
+      checkerPrecision:
+        newType === "float" ? prev.checkerPrecision || "1e-6" : null,
     }));
   };
 
   const handleStrictSpaceChange = (e) => {
     setProblemData((prev) => ({
       ...prev,
-      checker_strict_space: e.target.checked,
+      checkerStrictSpace: e.target.checked,
     }));
   };
 
   const handlePrecisionChange = (e) => {
     setProblemData((prev) => ({
       ...prev,
-      checker_precision: e.target.value,
+      checkerPrecision: e.target.value,
     }));
   };
 
@@ -35,15 +35,15 @@ export default function CheckerTab({ problemData, setProblemData }) {
         {/* Checker Type Dropdown */}
         <div>
           <label
-            htmlFor="checker_type"
+            htmlFor="checkerType"
             className="block text-sm font-medium text-zinc-300 mb-1"
           >
             Type
           </label>
           <select
-            id="checker_type"
-            name="checker_type"
-            value={problemData.checker_type || "string"}
+            id="checkerType"
+            name="checkerType"
+            value={problemData.checkerType || "string"}
             onChange={handleTypeChange}
             className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
           >
@@ -54,13 +54,13 @@ export default function CheckerTab({ problemData, setProblemData }) {
         </div>
 
         {/* Strict Space Checkbox - Show for String, Int, and Float */}
-        {(problemData.checker_type === "string" ||
-          problemData.checker_type === "int" ||
-          problemData.checker_type === "float") && (
+        {(problemData.checkerType === "string" ||
+          problemData.checkerType === "int" ||
+          problemData.checkerType === "float") && (
           <div className="flex items-center justify-between p-4 bg-zinc-700/50 rounded-md border border-zinc-700">
             <div className="flex-1">
               <label
-                htmlFor="checker_strict_space"
+                htmlFor="checkerStrictSpace"
                 className="font-medium text-zinc-200 cursor-pointer"
               >
                 Strict Space
@@ -72,10 +72,10 @@ export default function CheckerTab({ problemData, setProblemData }) {
             <div className="flex items-center ml-4">
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
-                  id="checker_strict_space"
-                  name="checker_strict_space"
+                  id="checkerStrictSpace"
+                  name="checkerStrictSpace"
                   type="checkbox"
-                  checked={problemData.checker_strict_space || false}
+                  checked={problemData.checkerStrictSpace || false}
                   onChange={handleStrictSpaceChange}
                   className="sr-only peer"
                 />
@@ -86,18 +86,18 @@ export default function CheckerTab({ problemData, setProblemData }) {
         )}
 
         {/* Precision Dropdown - Only for Float */}
-        {problemData.checker_type === "float" && (
+        {problemData.checkerType === "float" && (
           <div>
             <label
-              htmlFor="checker_precision"
+              htmlFor="checkerPrecision"
               className="block text-sm font-medium text-zinc-300 mb-1"
             >
               Precision
             </label>
             <select
-              id="checker_precision"
-              name="checker_precision"
-              value={problemData.checker_precision || "1e-6"}
+              id="checkerPrecision"
+              name="checkerPrecision"
+              value={problemData.checkerPrecision || "1e-6"}
               onChange={handlePrecisionChange}
               className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
             >

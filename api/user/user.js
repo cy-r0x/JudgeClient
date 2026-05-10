@@ -22,7 +22,7 @@ userModule.Login = async (username, password) => {
       password,
     });
 
-    // Store user data
+    // Store user data (token is in HttpOnly cookie)
     setUser(response.data);
     return { data: response.data };
   } catch (error) {
@@ -31,7 +31,6 @@ userModule.Login = async (username, password) => {
       username,
     });
 
-    // Special handling for invalid credentials
     if (error.status === 401) {
       return { error: "Invalid username or password" };
     }
@@ -54,7 +53,6 @@ userModule.Register = async (userData) => {
       context: "User Registration",
     });
 
-    // Handle specific error cases
     if (error.status === 401) {
       return { error: "Invalid or expired token" };
     }
@@ -163,6 +161,38 @@ userModule.updateUser = async (userId, payload) => {
 };
 
 /**
+ * Delete a user (Admin only)
+ * @param {string|number} userId - User ID
+ * @returns {Promise<{data?: Object, error?: string}>}
+ */
+userModule.deleteUser = async (userId) => {
+  try {
+    const response = await apiClient.post(
+      API_ENDPOINTS.DELETE_USER(userId),
+      {},
+    );
+    return { data: response.data };
+  } catch (error) {
+    const handledError = handleApiError(error, {
+      context: "Delete User",
+      userId,
+    });
+
+    if (error.status === 401) {
+      return { error: "Invalid or expired token" };
+    }
+    if (error.status === 403) {
+      return { error: "Insufficient permissions to delete user" };
+    }
+    if (error.status === 404) {
+      return { error: "User not found" };
+    }
+
+    return { error: handledError.error };
+  }
+};
+
+/**
  * Get all setters (Admin only)
  * @returns {Promise<{data?: Array, error?: string}>}
  */
@@ -239,7 +269,6 @@ userModule.DownloadUserCredsCSV = async (contestId) => {
       },
     );
 
-    // Extract filename from Content-Disposition header if available
     const contentDisposition = response.headers["content-disposition"];
     let filename = `contest_${contestId}_users.csv`;
 
@@ -281,5 +310,4 @@ userModule.Logout = () => {
   clearUser();
 };
 
-// Export for backward compatibility
 export default userModule;

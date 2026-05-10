@@ -272,9 +272,9 @@ export default function SubmissionsTable({ isAdmin, params }) {
                     {getLanguageDisplay(item.language)}
                   </td>
                   <td className="py-3 px-4 text-blue-400 hover:underline">
-                    <Link href={`/contests/${contestId}/${item.problem_id}`}>
+                    <Link href={`/contests/${contestId}/${item.problemId}`}>
                       {String.fromCharCode(
-                        "A".charCodeAt(0) + item.problem_index - 1
+                        "A".charCodeAt(0) + item.problemIndex - 1
                       )}
                     </Link>
                   </td>

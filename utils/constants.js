@@ -20,8 +20,10 @@ export const API_ENDPOINTS = {
   CONTESTS: "/api/contests",
   CONTEST_BY_ID: (id) => `/api/contests/${id}`,
   CONTEST_ASSIGN: "/api/contests/assign",
+  CONTEST_UPDATE_INDEX: "/api/contests/index",
   CONTEST_PROBLEMS: (id) => `/api/contests/problems/${id}`,
   CONTEST_STANDINGS: (id) => `/api/standings/${id}`,
+  CONTEST_STANDINGS_EXPORT: (id) => `/api/standings/export/${id}`,
 
   // Problems
   PROBLEMS: "/api/problems",
@@ -44,6 +46,7 @@ export const API_ENDPOINTS = {
   // Users
   CONTEST_USERS: (contestId) => `/api/users/${contestId}`,
   UPDATE_USER: (userId) => `/api/users/${userId}`,
+  DELETE_USER: (userId) => `/api/users/delete/${userId}`,
   USER_INFO: (userId) => `/api/users/info/${userId}`,
   SETTERS: () => "/api/users/setter",
   REGISTER_CSV: "/api/users/register/csv",

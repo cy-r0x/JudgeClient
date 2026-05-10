@@ -1,5 +1,7 @@
 /**
- * Authentication utilities for token and user management
+ * Authentication utilities for user session management
+ * Note: Auth token is stored in HttpOnly cookie by the server.
+ * Client only stores user profile info in localStorage for UI state.
  */
 import { jwtDecode } from "jwt-decode";
 import { STORAGE_KEYS, USER_ROLES } from "./constants";
@@ -45,12 +47,12 @@ export const clearUser = () => {
 };
 
 /**
- * Get authentication token
+ * Get authentication token from cookie (not localStorage)
  * @returns {string|null} Token or null
  */
 export const getToken = () => {
   const user = getUser();
-  return user?.access_token || null;
+  return user?.accessToken || null;
 };
 
 /**
@@ -70,14 +72,12 @@ export const getUserId = () => {
   const user = getUser();
   if (user?.id) return user.id;
   if (user?.userId) return user.userId;
-  if (user?.user_id) return user.user_id;
 
-  if (user?.access_token) {
+  const token = getToken();
+  if (token) {
     try {
-      const decoded = jwtDecode(user.access_token);
-      return (
-        decoded.id || decoded.user_id || decoded.userId || decoded.sub || null
-      );
+      const decoded = jwtDecode(token);
+      return decoded.id || decoded.userId || decoded.sub || null;
     } catch (e) {
       console.error("Error decoding token for ID", e);
     }
@@ -99,7 +99,7 @@ export const getUsername = () => {
  * @returns {boolean} True if authenticated
  */
 export const isAuthenticated = () => {
-  return !!getToken();
+  return !!getUser();
 };
 
 /**
@@ -154,8 +154,6 @@ export const isTokenValid = () => {
   if (!token) return false;
 
   try {
-    // If using JWT, you can decode and check expiration
-    // For now, just check if token exists
     return true;
   } catch (error) {
     return false;
