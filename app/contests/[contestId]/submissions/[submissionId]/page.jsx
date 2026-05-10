@@ -11,23 +11,18 @@ import { getVerdictName, getVerdictColor } from "@/utils/verdictFormatter";
 
 const normalizeSubmission = (submission) => ({
   id: submission?.id,
-  userId: submission?.userId ?? submission?.user_id ?? submission?.user?.id,
-  username:
-    submission?.username ?? submission?.user?.username ?? "Unknown user",
-  problemId:
-    submission?.problemId ?? submission?.problemId ?? submission?.problem?.id,
-  problemTitle:
-    submission?.problem?.title ?? submission?.problemTitle ?? "Problem",
-  contestId:
-    submission?.contestId ?? submission?.contestId ?? submission?.contest?.id,
+  userId: submission?.userId ?? submission?.user?.id,
+  username: submission?.username ?? submission?.user?.username ?? "Unknown user",
+  problemId: submission?.problemId ?? submission?.problem?.id,
+  problemTitle: submission?.problem?.title ?? submission?.problemTitle ?? "Problem",
+  contestId: submission?.contestId ?? submission?.contest?.id,
   language: submission?.language ?? "",
-  sourceCode: submission?.sourceCode ?? submission?.sourceCode ?? "",
-  verdict: submission?.verdict ?? "",
-  firstBlood: submission?.firstBlood ?? submission?.first_blood ?? false,
-  executionTime:
-    submission?.executionTime ?? submission?.execution_time ?? null,
-  memoryUsed: submission?.memoryUsed ?? submission?.memory_used ?? null,
-  submittedAt: submission?.submittedAt ?? submission?.submitted_at ?? null,
+  sourceCode: submission?.sourceCode ?? "",
+  verdict: submission?.status ?? submission?.verdict ?? "",
+  firstBlood: submission?.firstBlood ?? false,
+  executionTime: submission?.execTime ?? submission?.executionTime ?? null,
+  memoryUsed: submission?.execMemory ?? submission?.memoryUsed ?? null,
+  submittedAt: submission?.createdAt ?? submission?.submittedAt ?? null,
 });
 
 export default function SubmissionPage({ params }) {

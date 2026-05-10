@@ -89,11 +89,11 @@ submissionModule.getSubmission = async (submissionId) => {
  * @param {Object} params - Query parameters
  * @returns {Promise<{data?: Object, error?: string}>}
  */
-submissionModule.getSubmissions = async ({ page = 1, limit, verdict } = {}) => {
+submissionModule.getSubmissions = async ({ page = 1, limit, status } = {}) => {
   try {
     let url = `${API_ENDPOINTS.SUBMISSIONS}?page=${page}`;
     if (limit) url += `&limit=${limit}`;
-    if (verdict) url += `&verdict=${verdict}`;
+    if (status) url += `&status=${status}`;
     const response = await apiClient.get(url);
     const data = response.data;
     return { data: data };
@@ -121,14 +121,14 @@ submissionModule.getSubmissions = async ({ page = 1, limit, verdict } = {}) => {
  * @param {number|string} contestId - Contest ID
  * @param {number} page - Page number (optional, default: 1)
  * @param {number} limit - Results per page (optional, 20-100)
- * @param {string} verdict - Filter by verdict (optional)
+ * @param {string} status - Filter by status (optional)
  * @returns {Promise<{data?: Object, error?: string}>}
  */
 submissionModule.getSubmissionsByContest = async (
   contestId,
   page = 1,
   limit,
-  verdict,
+  status,
 ) => {
   if (!contestId) {
     return { error: "Contest ID is required" };
@@ -138,7 +138,7 @@ submissionModule.getSubmissionsByContest = async (
     let url = API_ENDPOINTS.SUBMISSIONS_BY_CONTEST(contestId, page);
     const queryParams = [];
     if (limit) queryParams.push(`limit=${limit}`);
-    if (verdict) queryParams.push(`verdict=${verdict}`);
+    if (status) queryParams.push(`status=${status}`);
     if (queryParams.length > 0) {
       url += (url.includes("?") ? "&" : "?") + queryParams.join("&");
     }
