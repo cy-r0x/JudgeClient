@@ -55,9 +55,9 @@ export function EditorSection({ problemData, contestId }) {
 
   const router = useRouter();
 
-  // Initialize code and language from last_submission
+  // Initialize code and language from lastSubmission
   useEffect(() => {
-    if (problemData?.last_submission) {
+    if (problemData?.lastSubmission) {
       const { sourceCode, language } = problemData.lastSubmission;
       if (sourceCode) {
         setCode(sourceCode);
