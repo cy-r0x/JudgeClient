@@ -6,7 +6,7 @@ import Button from "@/components/ButtonComponent/Button";
 import NotificationComponent from "@/components/NotificationComponent/NotificationComponent";
 import contestModule from "@/api/contest/contest";
 
-export default function CreateContestModal({ isOpen, onClose }) {
+export default function CreateContestModal({ isOpen, onClose, onSuccess }) {
   const router = useRouter();
   const [formData, setFormData] = useState({
     title: "",
@@ -84,6 +84,7 @@ export default function CreateContestModal({ isOpen, onClose }) {
         showNotification(error, "error");
       } else if (data && data.id) {
         showNotification("Contest created successfully!", "success");
+        onSuccess?.();
         // Redirect to manage page after short delay
         setTimeout(() => {
           router.push(`/admin/manage/${data.id}`);

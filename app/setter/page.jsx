@@ -63,7 +63,10 @@ function SetterPanel() {
   return (
     <div className="flex min-h-[calc(100vh-64px)] bg-gradient-to-br from-zinc-950 to-zinc-900">
       {modalActive ? (
-        <CreateProblem setModalActive={setModalActive} />
+        <CreateProblem
+          setModalActive={setModalActive}
+          onSuccess={fetchProblems}
+        />
       ) : (
         <div></div>
       )}

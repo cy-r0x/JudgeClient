@@ -147,7 +147,7 @@ export default function ManageProblemsTab({
 
   const filteredProblems = contestProblems.filter(
     (problem) =>
-      problem.problem_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      problem.problemName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       problem.problemId.toString().includes(searchTerm),
   );
 
@@ -293,12 +293,12 @@ export default function ManageProblemsTab({
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-zinc-100">
-                        {problem.problem_name}
+                        {problem.problemName}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-zinc-400">
-                        {problem.problem_author || "Unknown"}
+                        {problem.problemAuthor || "Unknown"}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">

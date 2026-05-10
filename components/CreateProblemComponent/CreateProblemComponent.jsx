@@ -4,7 +4,7 @@ import { useState } from "react";
 import setterModule from "@/api/setter/setter";
 import { useRouter } from "next/navigation";
 
-function CreateProblem({ setModalActive }) {
+function CreateProblem({ setModalActive, onSuccess }) {
   const [title, setTitle] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -30,6 +30,7 @@ function CreateProblem({ setModalActive }) {
       return;
     }
     if (data && data.id) {
+      onSuccess?.();
       router.push(`/edit/problem/${data.id}`);
     }
     setIsSubmitting(false);
