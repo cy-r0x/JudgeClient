@@ -65,7 +65,7 @@ export default function TestCasesTab({
           // Remove from local state after successful deletion
           setProblemData((prev) => ({
             ...prev,
-            testCases: prev.testCases.filter((tc) => tc.id !== testCaseId),
+            testCases: (prev.testCases || []).filter((tc) => tc.id !== testCaseId),
           }));
           showNotification?.(
             `${
@@ -109,9 +109,9 @@ export default function TestCasesTab({
             />
           </div>
 
-          {problemData.testCases.filter((tc) => tc.isSample).length > 0 ? (
+          {(problemData.testCases || []).filter((tc) => tc.isSample).length > 0 ? (
             <div className="space-y-4">
-              {problemData.testCases
+              {(problemData.testCases || [])
                 .filter((tc) => tc.isSample)
                 .map((testCase, index) => (
                   <TestCaseItem
@@ -145,9 +145,9 @@ export default function TestCasesTab({
             />
           </div>
 
-          {problemData.testCases.filter((tc) => !tc.isSample).length > 0 ? (
+          {(problemData.testCases || []).filter((tc) => !tc.isSample).length > 0 ? (
             <div className="space-y-4">
-              {problemData.testCases
+              {(problemData.testCases || [])
                 .filter((tc) => !tc.isSample)
                 .map((testCase, index) => (
                   <TestCaseItem
