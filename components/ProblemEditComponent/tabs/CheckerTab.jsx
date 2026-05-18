@@ -50,13 +50,12 @@ export default function CheckerTab({ problemData, setProblemData }) {
             <option value="string">String</option>
             <option value="int">Int</option>
             <option value="float">Float</option>
+            <option value="unordered">Unordered</option>
           </select>
         </div>
 
-        {/* Strict Space Checkbox - Show for String, Int, and Float */}
-        {(problemData.checkerType === "string" ||
-          problemData.checkerType === "int" ||
-          problemData.checkerType === "float") && (
+        {/* Strict Space Checkbox - Only for String */}
+        {problemData.checkerType === "string" && (
           <div className="flex items-center justify-between p-4 bg-zinc-700/50 rounded-md border border-zinc-700">
             <div className="flex-1">
               <label
@@ -66,7 +65,7 @@ export default function CheckerTab({ problemData, setProblemData }) {
                 Strict Space
               </label>
               <p className="text-zinc-400 mt-1 text-sm">
-                If enabled, each token and spaces are required to match exactly.
+                If enabled, output must match exactly byte-for-byte. If tokens match but whitespace differs, a Presentation Error (PE) is returned.
               </p>
             </div>
             <div className="flex items-center ml-4">
