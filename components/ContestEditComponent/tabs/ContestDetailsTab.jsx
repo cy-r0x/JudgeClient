@@ -15,12 +15,12 @@ export default function ContestDetailsTab({ contestData, setContestData }) {
     const minutes = parseInt(e.target.value) || 0;
     setContestData((prev) => ({
       ...prev,
-      contest: { ...prev.contest, duration_seconds: minutes * 60 },
+      contest: { ...prev.contest, durationSeconds: minutes * 60 },
     }));
   };
 
   const getDurationInMinutes = () => {
-    return Math.floor(contestData.contest.duration_seconds / 60);
+    return Math.floor(contestData.contest.durationSeconds / 60);
   };
 
   const formatDateTimeForInput = (dateString) => {
@@ -98,16 +98,16 @@ export default function ContestDetailsTab({ contestData, setContestData }) {
 
           <div>
             <label
-              htmlFor="start_time"
+              htmlFor="startTime"
               className="block text-sm font-medium text-zinc-300 mb-1"
             >
               Start Time
             </label>
             <input
               type="datetime-local"
-              id="start_time"
-              name="start_time"
-              value={formatDateTimeForInput(contestData.contest.start_time)}
+              id="startTime"
+              name="startTime"
+              value={formatDateTimeForInput(contestData.contest.startTime)}
               onChange={handleInputChange}
               className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
             />
@@ -172,7 +172,7 @@ export default function ContestDetailsTab({ contestData, setContestData }) {
             </label>
             <input
               type="text"
-              value={new Date(contestData.contest.created_at).toLocaleString()}
+              value={new Date(contestData.contest.createdAt).toLocaleString()}
               disabled
               className="w-full px-3 py-2 bg-zinc-800 border border-zinc-600 rounded-md text-zinc-400 cursor-not-allowed"
             />
@@ -185,8 +185,8 @@ export default function ContestDetailsTab({ contestData, setContestData }) {
             <div className="space-y-1 text-xs text-zinc-400">
               <p>
                 <span className="font-medium">Duration:</span>{" "}
-                {Math.floor(contestData.contest.duration_seconds / 3600)}h{" "}
-                {Math.floor((contestData.contest.duration_seconds % 3600) / 60)}
+                {Math.floor(contestData.contest.durationSeconds / 3600)}h{" "}
+                {Math.floor((contestData.contest.durationSeconds % 3600) / 60)}
                 m
               </p>
               <p>

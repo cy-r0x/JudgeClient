@@ -33,10 +33,10 @@ export default function TestCaseModal({
       if (editingIndex === -1) {
         // Add new test case - send POST request to API
         const { data, error } = await problemModule.addTestCase({
-          problem_id: problemData.id,
+          problemId: problemData.id,
           input,
-          expected_output: output,
-          is_sample: testCaseType === "sample",
+          expectedOutput: output,
+          isSample: testCaseType === "sample",
         });
 
         if (error) {
@@ -49,7 +49,7 @@ export default function TestCaseModal({
           // Add the new test case with the returned ID to the local state
           setProblemData((prev) => ({
             ...prev,
-            test_cases: [...prev.test_cases, data],
+            testCases: [...prev.testCases, data],
           }));
           showNotification?.(
             `${
@@ -71,8 +71,8 @@ export default function TestCaseModal({
 
         const { data, error } = await problemModule.updateTestCase(testCaseId, {
           input,
-          expected_output: output,
-          is_sample: testCaseType === "sample",
+          expectedOutput: output,
+          isSample: testCaseType === "sample",
         });
 
         if (error) {
@@ -87,19 +87,19 @@ export default function TestCaseModal({
                 ...data,
                 id: data.id ?? testCaseId,
                 input: data.input ?? input,
-                expected_output: data.expected_output ?? output,
-                is_sample: data.is_sample ?? testCaseType === "sample",
+                expectedOutput: data.expectedOutput ?? output,
+                isSample: data.isSample ?? testCaseType === "sample",
               }
             : {
                 id: testCaseId,
                 input,
-                expected_output: output,
-                is_sample: testCaseType === "sample",
+                expectedOutput: output,
+                isSample: testCaseType === "sample",
               };
 
         setProblemData((prev) => ({
           ...prev,
-          test_cases: prev.test_cases.map((tc) =>
+          testCases: prev.testCases.map((tc) =>
             tc.id === testCaseId ? { ...tc, ...updatedFromApi } : tc,
           ),
         }));

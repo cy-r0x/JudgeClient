@@ -41,25 +41,25 @@ export default function PreviewPage({ params }) {
         }
       }
       if (
-        typeof parsedData.input_statement === "string" &&
-        parsedData.input_statement.trim()
+        typeof parsedData.inputStatement === "string" &&
+        parsedData.inputStatement.trim()
       ) {
         try {
-          parsedData.input_statement = JSON.parse(parsedData.input_statement);
+          parsedData.inputStatement = JSON.parse(parsedData.inputStatement);
         } catch (e) {
-          console.error("Error parsing input_statement:", e);
-          parsedData.input_statement = "";
+          console.error("Error parsing inputStatement:", e);
+          parsedData.inputStatement = "";
         }
       }
       if (
-        typeof parsedData.output_statement === "string" &&
-        parsedData.output_statement.trim()
+        typeof parsedData.outputStatement === "string" &&
+        parsedData.outputStatement.trim()
       ) {
         try {
-          parsedData.output_statement = JSON.parse(parsedData.output_statement);
+          parsedData.outputStatement = JSON.parse(parsedData.outputStatement);
         } catch (e) {
-          console.error("Error parsing output_statement:", e);
-          parsedData.output_statement = "";
+          console.error("Error parsing outputStatement:", e);
+          parsedData.outputStatement = "";
         }
       }
 

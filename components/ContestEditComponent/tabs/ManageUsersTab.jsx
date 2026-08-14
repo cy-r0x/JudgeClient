@@ -13,8 +13,6 @@ import {
   MdDownload,
 } from "react-icons/md";
 import userModule from "@/api/user/user";
-import apiClient from "@/utils/apiClient";
-import { getToken } from "@/utils/auth";
 
 export default function ManageUsersTab({
   contestData,
@@ -31,12 +29,12 @@ export default function ManageUsersTab({
   });
   const [csvFileInputKey, setCSVFileInputKey] = useState(Date.now());
   const [newUser, setNewUser] = useState({
-    full_name: "",
+    fullName: "",
     username: "",
     password: "",
-    room_no: "",
-    pc_no: "",
-    allowed_contest: contestData.contest.id,
+    roomNo: "",
+    pcNo: "",
+    allowedContest: contestData.contest.id,
   });
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState([]);
@@ -79,7 +77,7 @@ export default function ManageUsersTab({
 
     // Basic validation
     if (
-      !newUser.full_name.trim() ||
+      !newUser.fullName.trim() ||
       !newUser.username.trim() ||
       !newUser.password.trim()
     ) {
@@ -92,12 +90,12 @@ export default function ManageUsersTab({
 
       // Prepare user data
       const userData = {
-        full_name: newUser.full_name,
+        fullName: newUser.fullName,
         username: newUser.username,
         password: newUser.password,
-        room_no: newUser.room_no || null,
-        pc_no: newUser.pc_no ? parseInt(newUser.pc_no) : null,
-        allowed_contest: contestData.contest.id,
+        roomNo: newUser.roomNo || null,
+        pcNo: newUser.pcNo || null,
+        allowedContest: contestData.contest.id,
       };
 
       const { data, error } = await userModule.Register(userData);
@@ -107,12 +105,12 @@ export default function ManageUsersTab({
       } else if (data) {
         // Reset form
         setNewUser({
-          full_name: "",
+          fullName: "",
           username: "",
           password: "",
-          room_no: "",
-          pc_no: "",
-          allowed_contest: contestData.contest.id,
+          roomNo: "",
+          pcNo: "",
+          allowedContest: contestData.contest.id,
         });
         setShowAddUser(false);
         showNotification("User registered successfully!", "success");
@@ -136,19 +134,19 @@ export default function ManageUsersTab({
     try {
       setLoading(true);
 
-      const response = await apiClient.post(`/api/users/delete/${userId}`, {});
+      const { error } = await userModule.deleteUser(userId);
 
-      if (response.status === 200) {
+      if (error) {
+        showNotification(error, "error");
+      } else {
         setUsers((prev) => prev.filter((user) => user.id !== userId));
         showNotification("User deleted successfully!", "success");
-        // Refresh users list
         await fetchContestUsers();
       }
     } catch (error) {
       console.error("Error removing user:", error);
       showNotification(
-        error.response?.data?.message ||
-          "Failed to delete user. Please try again.",
+        "Failed to delete user. Please try again.",
         "error",
       );
     } finally {
@@ -202,7 +200,7 @@ export default function ManageUsersTab({
       const formData = new FormData();
       formData.append("prefix", csvData.prefix);
       formData.append("clan_length", csvData.clan_length);
-      formData.append("contest_id", contestData.contest.id);
+      formData.append("contestId", contestData.contest.id);
       formData.append("file", csvData.file);
 
       const { data, error } = await userModule.RegisterCSV(formData);
@@ -270,8 +268,8 @@ export default function ManageUsersTab({
   const filteredUsers = users.filter(
     (user) =>
       user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (user.full_name &&
-        user.full_name.toLowerCase().includes(searchTerm.toLowerCase())),
+      (user.fullName &&
+        user.fullName.toLowerCase().includes(searchTerm.toLowerCase())),
   );
 
   return (
@@ -314,16 +312,16 @@ export default function ManageUsersTab({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label
-                  htmlFor="full_name"
+                  htmlFor="fullName"
                   className="block text-sm font-medium text-zinc-300 mb-1"
                 >
                   Full Name *
                 </label>
                 <input
                   type="text"
-                  id="full_name"
-                  name="full_name"
-                  value={newUser.full_name}
+                  id="fullName"
+                  name="fullName"
+                  value={newUser.fullName}
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
                   placeholder="Enter full name"
@@ -371,16 +369,16 @@ export default function ManageUsersTab({
               </div>
               <div>
                 <label
-                  htmlFor="room_no"
+                  htmlFor="roomNo"
                   className="block text-sm font-medium text-zinc-300 mb-1"
                 >
                   Room No (Optional)
                 </label>
                 <input
                   type="text"
-                  id="room_no"
-                  name="room_no"
-                  value={newUser.room_no}
+                  id="roomNo"
+                  name="roomNo"
+                  value={newUser.roomNo}
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
                   placeholder="Enter room number"
@@ -389,16 +387,16 @@ export default function ManageUsersTab({
               </div>
               <div>
                 <label
-                  htmlFor="pc_no"
+                  htmlFor="pcNo"
                   className="block text-sm font-medium text-zinc-300 mb-1"
                 >
                   PC No (Optional)
                 </label>
                 <input
                   type="number"
-                  id="pc_no"
-                  name="pc_no"
-                  value={newUser.pc_no}
+                  id="pcNo"
+                  name="pcNo"
+                  value={newUser.pcNo}
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 bg-zinc-700 border border-zinc-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
                   placeholder="Enter PC number"
@@ -581,7 +579,7 @@ export default function ManageUsersTab({
                         <div className="shrink-0 h-8 w-8">
                           <div className="h-8 w-8 rounded-full bg-orange-500 flex items-center justify-center">
                             <span className="text-white text-sm font-medium">
-                              {(user.full_name || user.username)
+                              {(user.fullName || user.username)
                                 .charAt(0)
                                 .toUpperCase()}
                             </span>
@@ -589,10 +587,10 @@ export default function ManageUsersTab({
                         </div>
                         <div className="ml-4">
                           <div className="text-sm font-medium text-zinc-100">
-                            {user.full_name || user.username}
+                            {user.fullName || user.username}
                           </div>
                           <div className="text-xs text-zinc-400">
-                            {user.clan}
+                            {user.additionalInfo}
                           </div>
                         </div>
                       </div>
@@ -604,12 +602,12 @@ export default function ManageUsersTab({
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-zinc-100">
-                        {user.room_no}
+                        {user.roomNo}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-zinc-100">
-                        {user.pc_no}
+                        {user.pcNo}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-300">

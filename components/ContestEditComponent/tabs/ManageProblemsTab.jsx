@@ -59,7 +59,7 @@ export default function ManageProblemsTab({
 
     // Check if problem already exists in contest
     const exists = contestProblems.some(
-      (p) => String(p.problem_id) === problemId,
+      (p) => String(p.problemId) === problemId,
     );
     if (exists) {
       showNotification("Problem already exists in this contest", "error");
@@ -70,8 +70,8 @@ export default function ManageProblemsTab({
       setLoading(true);
 
       const contestProblem = {
-        contest_id: contestData.contest.id,
-        problem_id: problemId,
+        contestId: contestData.contest.id,
+        problemId: problemId,
       };
 
       const { data, error } = await contestModule.assignProblem(contestProblem);
@@ -101,7 +101,7 @@ export default function ManageProblemsTab({
       // TODO: Implement remove problem API call when available
       // For now, just remove from local state
       setContestProblems((prev) =>
-        prev.filter((p) => String(p.problem_id) !== String(problemId)),
+        prev.filter((p) => String(p.problemId) !== String(problemId)),
       );
 
       showNotification("Problem removed successfully!", "success");
@@ -117,21 +117,26 @@ export default function ManageProblemsTab({
     try {
       setLoading(true);
 
-      // TODO: Replace with actual API call
-      // const response = await contestModule.updateProblemIndex(contestData.contest.id, problemId, newIndex);
-
-      // Mock implementation
-      setContestProblems((prev) =>
-        prev
-          .map((p) =>
-            String(p.problem_id) === String(problemId)
-              ? { ...p, index: parseInt(newIndex, 10) }
-              : p,
-          )
-          .sort((a, b) => a.index - b.index),
+      const updatedProblems = contestProblems.map((p) =>
+        String(p.problemId) === String(problemId)
+          ? { ...p, index: parseInt(newIndex, 10) }
+          : p,
       );
 
-      showNotification("Problem order updated!", "success");
+      const payload = updatedProblems.map((p) => ({
+        contestId: contestData.contest.id,
+        problemId: p.problemId,
+        index: p.index,
+      }));
+
+      const { error } = await contestModule.updateContestIndex(payload);
+
+      if (error) {
+        showNotification(error, "error");
+      } else {
+        setContestProblems(updatedProblems.sort((a, b) => a.index - b.index));
+        showNotification("Problem order updated!", "success");
+      }
     } catch (error) {
       console.error("Error updating problem order:", error);
       showNotification("Failed to update problem order.", "error");
@@ -142,8 +147,8 @@ export default function ManageProblemsTab({
 
   const filteredProblems = contestProblems.filter(
     (problem) =>
-      problem.problem_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      problem.problem_id.toString().includes(searchTerm),
+      problem.problemName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      problem.problemId.toString().includes(searchTerm),
   );
 
   const getNextIndex = () => {
@@ -270,7 +275,7 @@ export default function ManageProblemsTab({
               <tbody className="bg-zinc-800/30 divide-y divide-zinc-700/50">
                 {filteredProblems.map((problem, displayIndex) => (
                   <tr
-                    key={problem.problem_id}
+                    key={problem.problemId}
                     className="hover:bg-zinc-700/30 transition-colors"
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -283,17 +288,17 @@ export default function ManageProblemsTab({
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-zinc-100">
-                        {problem.problem_id}
+                        {problem.problemId}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm font-medium text-zinc-100">
-                        {problem.problem_name}
+                        {problem.problemName}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-zinc-400">
-                        {problem.problem_author || "Unknown"}
+                        {problem.problemAuthor || "Unknown"}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -301,7 +306,7 @@ export default function ManageProblemsTab({
                         type="number"
                         value={problem.index}
                         onChange={(e) =>
-                          handleIndexChange(problem.problem_id, e.target.value)
+                          handleIndexChange(problem.problemId, e.target.value)
                         }
                         className="w-20 px-2 py-1 bg-zinc-700 border border-zinc-600 rounded text-white text-sm focus:outline-none focus:ring-1 focus:ring-orange-500"
                         min="1"
@@ -310,7 +315,7 @@ export default function ManageProblemsTab({
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-300">
                       <div className="flex space-x-3">
-                        <Link href={`/edit/problem/${problem.problem_id}`}>
+                        <Link href={`/edit/problem/${problem.problemId}`}>
                           <button className="text-blue-400 hover:text-blue-300 transition-colors flex items-center space-x-1">
                             <MdEdit />
                             <span>Edit</span>
@@ -318,7 +323,7 @@ export default function ManageProblemsTab({
                         </Link>
                         <button
                           onClick={() =>
-                            handleRemoveProblem(problem.problem_id)
+                            handleRemoveProblem(problem.problemId)
                           }
                           className="text-red-400 hover:text-red-300 transition-colors flex items-center space-x-1"
                           disabled={loading}

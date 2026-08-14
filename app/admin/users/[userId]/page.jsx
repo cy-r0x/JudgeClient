@@ -32,12 +32,12 @@ function EditUserPage({ params }) {
   }
 
   const [formData, setFormData] = useState({
-    full_name: "",
+    fullName: "",
     password: "",
-    clan: "",
-    room_no: "",
-    pc_no: "",
-    allowed_contest: "",
+    additionalInfo: "",
+    roomNo: "",
+    pcNo: "",
+    allowedContest: "",
   });
 
   const [initialLoading, setInitialLoading] = useState(true);
@@ -58,12 +58,12 @@ function EditUserPage({ params }) {
         } else if (data) {
           setUserInfo(data);
           setFormData({
-            full_name: data.fullName || "",
+            fullName: data.fullName || "",
             password: "", // Keep password blank
-            clan: data.clan || "",
-            room_no: data.roomNo || "",
-            pc_no: data.pcNo || "",
-            allowed_contest: data.allowedContest
+            additionalInfo: data.additionalInfo || "",
+            roomNo: data.roomNo || "",
+            pcNo: data.pcNo || "",
+            allowedContest: data.allowedContest
               ? String(data.allowedContest)
               : "",
           });
@@ -94,13 +94,13 @@ function EditUserPage({ params }) {
 
     // Build payload with only non-empty values (omitempty)
     const payload = {};
-    if (formData.full_name) payload.full_name = formData.full_name;
+    if (formData.fullName) payload.fullName = formData.fullName;
     if (formData.password) payload.password = formData.password;
-    if (formData.clan) payload.clan = formData.clan;
-    if (formData.room_no) payload.room_no = formData.room_no;
-    if (formData.pc_no) payload.pc_no = formData.pc_no;
-    if (formData.allowed_contest)
-      payload.allowed_contest = formData.allowed_contest.trim();
+    if (formData.additionalInfo) payload.additionalInfo = formData.additionalInfo;
+    if (formData.roomNo) payload.roomNo = formData.roomNo;
+    if (formData.pcNo) payload.pcNo = formData.pcNo;
+    if (formData.allowedContest)
+      payload.allowedContest = formData.allowedContest.trim();
 
     if (Object.keys(payload).length === 0) {
       setError("Please provide at least one field to update.");
@@ -193,8 +193,8 @@ function EditUserPage({ params }) {
                 </label>
                 <input
                   type="text"
-                  name="full_name"
-                  value={formData.full_name}
+                  name="fullName"
+                  value={formData.fullName}
                   onChange={handleInputChange}
                   className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-3 text-sm text-zinc-200 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all"
                   placeholder="Update user full name"
@@ -218,12 +218,12 @@ function EditUserPage({ params }) {
 
               <div>
                 <label className="block text-sm font-medium text-zinc-300 mb-2">
-                  Clan
+                  Additional Info
                 </label>
                 <input
                   type="text"
-                  name="clan"
-                  value={formData.clan}
+                  name="additionalInfo"
+                  value={formData.additionalInfo}
                   onChange={handleInputChange}
                   className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-3 text-sm text-zinc-200 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all"
                   placeholder="User's clan or team"
@@ -236,8 +236,8 @@ function EditUserPage({ params }) {
                 </label>
                 <input
                   type="text"
-                  name="room_no"
-                  value={formData.room_no}
+                  name="roomNo"
+                  value={formData.roomNo}
                   onChange={handleInputChange}
                   className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-3 text-sm text-zinc-200 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all"
                   placeholder="Physical room location"
@@ -250,8 +250,8 @@ function EditUserPage({ params }) {
                 </label>
                 <input
                   type="text"
-                  name="pc_no"
-                  value={formData.pc_no}
+                  name="pcNo"
+                  value={formData.pcNo}
                   onChange={handleInputChange}
                   className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-3 text-sm text-zinc-200 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all"
                   placeholder="Assigned PC identifier"
@@ -264,8 +264,8 @@ function EditUserPage({ params }) {
                 </label>
                 <input
                   type="text"
-                  name="allowed_contest"
-                  value={formData.allowed_contest}
+                  name="allowedContest"
+                  value={formData.allowedContest}
                   onChange={handleInputChange}
                   className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-4 py-3 text-sm text-zinc-200 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500 transition-all font-mono"
                   placeholder="Contest ID user can access"

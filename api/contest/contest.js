@@ -18,7 +18,6 @@ contestModule.getContests = async () => {
     const response = await apiClient.get(API_ENDPOINTS.CONTESTS);
     const contests = response.data;
 
-    // Ensure contests is always an array
     if (!Array.isArray(contests)) {
       return { data: [] };
     }
@@ -57,10 +56,9 @@ contestModule.getContest = async (contestId) => {
     );
     const contestData = response.data;
 
-    // Ensure numeric fields are properly typed
-    if (contestData.contest?.duration_seconds) {
-      contestData.contest.duration_seconds = parseInt(
-        contestData.contest.duration_seconds,
+    if (contestData.contest?.durationSeconds) {
+      contestData.contest.durationSeconds = parseInt(
+        contestData.contest.durationSeconds,
       );
     }
 
@@ -92,11 +90,17 @@ contestModule.getContest = async (contestId) => {
  */
 contestModule.createContest = async (contestData) => {
   try {
+    const startTime = new Date(contestData.startTime);
+    const durationSeconds = parseInt(contestData.durationSeconds);
+    const endTime = new Date(startTime.getTime() + durationSeconds * 1000);
+
     const response = await apiClient.post(API_ENDPOINTS.CONTESTS, {
       title: contestData.title,
+      userPrefix: contestData.userPrefix,
       description: contestData.description || "",
-      start_time: contestData.start_time,
-      duration_seconds: parseInt(contestData.duration_seconds),
+      startTime: startTime.toISOString(),
+      endTime: endTime.toISOString(),
+      durationSeconds,
     });
 
     return { data: response.data };
@@ -120,12 +124,18 @@ contestModule.createContest = async (contestData) => {
  */
 contestModule.updateContest = async (contest) => {
   try {
+    const startTime = new Date(contest.startTime);
+    const durationSeconds = parseInt(contest.durationSeconds);
+    const endTime = new Date(startTime.getTime() + durationSeconds * 1000);
+
     const response = await apiClient.patch(API_ENDPOINTS.CONTESTS, {
       id: contest.id,
       title: contest.title,
+      userPrefix: contest.userPrefix,
       description: contest.description,
-      start_time: contest.start_time,
-      duration_seconds: parseInt(contest.duration_seconds),
+      startTime: startTime.toISOString(),
+      endTime: endTime.toISOString(),
+      durationSeconds,
     });
 
     return { data: response.data };
@@ -149,21 +159,20 @@ contestModule.updateContest = async (contest) => {
  * @returns {Promise<{data?: Object, error?: string}>}
  */
 contestModule.assignProblem = async (contestProblem) => {
-  // Input validation
   if (!contestProblem || typeof contestProblem !== "object") {
     return { error: "Contest problem data is required" };
   }
 
-  const normalizedContestId = normalizeId(contestProblem.contest_id);
-  const normalizedProblemId = normalizeId(contestProblem.problem_id);
+  const normalizedContestId = normalizeId(contestProblem.contestId);
+  const normalizedProblemId = normalizeId(contestProblem.problemId);
   if (!normalizedContestId || !normalizedProblemId) {
     return { error: "Contest ID and Problem ID are required" };
   }
 
   try {
     const response = await apiClient.post(API_ENDPOINTS.CONTEST_ASSIGN, {
-      contest_id: normalizedContestId,
-      problem_id: normalizedProblemId,
+      contestId: normalizedContestId,
+      problemId: normalizedProblemId,
       index: contestProblem.index
         ? parseInt(contestProblem.index, 10)
         : undefined,
@@ -198,6 +207,41 @@ contestModule.assignProblem = async (contestProblem) => {
 };
 
 /**
+ * Update contest problem indices
+ * @param {Array} contestProblems - Array of { contestId, problemId, index }
+ * @returns {Promise<{data?: Object, error?: string}>}
+ */
+contestModule.updateContestIndex = async (contestProblems) => {
+  if (!Array.isArray(contestProblems) || contestProblems.length === 0) {
+    return { error: "Contest problems array is required" };
+  }
+
+  try {
+    const response = await apiClient.patch(
+      API_ENDPOINTS.CONTEST_UPDATE_INDEX,
+      contestProblems,
+    );
+    return { data: response.data };
+  } catch (error) {
+    const handledError = handleApiError(error, {
+      context: "Update Contest Problem Index",
+    });
+
+    if (error.status === 401) {
+      return { error: "Invalid or expired token" };
+    }
+    if (error.status === 403) {
+      return { error: "Access denied" };
+    }
+    if (error.status === 404) {
+      return { error: "No contest problems updated" };
+    }
+
+    return { error: handledError.error };
+  }
+};
+
+/**
  * Get problems for a contest
  * @param {string} contestId - Contest ID
  * @returns {Promise<{data?: Array, error?: string}>}
@@ -214,7 +258,6 @@ contestModule.getContestProblems = async (contestId) => {
     );
     const problems = response.data;
 
-    // Ensure problems is always an array
     if (!Array.isArray(problems)) {
       return { data: [] };
     }
@@ -268,6 +311,42 @@ contestModule.getContestStandings = async (
   } catch (error) {
     const handledError = handleApiError(error, {
       context: "Get Contest Standings",
+      contestId: normalizedContestId,
+    });
+
+    if (error.status === 401) {
+      return { error: "Invalid or expired token" };
+    }
+    if (error.status === 403) {
+      return { error: "Access denied" };
+    }
+    if (error.status === 404) {
+      return { error: "Contest not found" };
+    }
+
+    return { error: handledError.error };
+  }
+};
+
+/**
+ * Export standings for a contest (Admin only)
+ * @param {string} contestId - Contest ID
+ * @returns {Promise<{data?: Object, error?: string}>}
+ */
+contestModule.exportStandings = async (contestId) => {
+  const normalizedContestId = normalizeId(contestId);
+  if (!normalizedContestId) {
+    return { error: "Contest ID is required" };
+  }
+
+  try {
+    const response = await apiClient.get(
+      API_ENDPOINTS.CONTEST_STANDINGS_EXPORT(normalizedContestId),
+    );
+    return { data: response.data };
+  } catch (error) {
+    const handledError = handleApiError(error, {
+      context: "Export Contest Standings",
       contestId: normalizedContestId,
     });
 

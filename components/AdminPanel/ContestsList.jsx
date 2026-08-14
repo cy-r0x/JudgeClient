@@ -106,10 +106,10 @@ export default function ContestsList({
                 </span>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-300">
-                {formatDateTime(contest.start_time)}
+                {formatDateTime(contest.startTime)}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-300">
-                {formatDuration(contest.duration_seconds)}
+                {formatDuration(contest.durationSeconds)}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-300">
                 <div className="flex space-x-3">

@@ -87,7 +87,7 @@ export default function SettersList({
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm font-medium text-zinc-100">
-                    {setter.full_name}
+                    {setter.fullName}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-300">

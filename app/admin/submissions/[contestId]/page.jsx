@@ -276,26 +276,26 @@ export default function AdminSubmissions({ params }) {
                   <td className="py-3 px-4">
                     <div className="flex flex-col">
                       <span className="font-medium">
-                        {item.full_name || item.username}
+                        {item.name || item.username}
                       </span>
-                      {item.clan && (
+                      {item.additionalInfo && (
                         <span className="text-xs text-zinc-400 mt-0.5">
-                          {item.clan}
+                          {item.additionalInfo}
                         </span>
                       )}
                     </div>
                   </td>
                   <td className="py-3 px-4">
                     <div className="flex flex-col text-xs">
-                      {item.room_no && (
+                      {item.roomNo && (
                         <span className="text-zinc-400">
-                          Room: {item.room_no}
+                          Room: {item.roomNo}
                         </span>
                       )}
-                      {item.pc_no && (
-                        <span className="text-zinc-400">PC: {item.pc_no}</span>
+                      {item.pcNo && (
+                        <span className="text-zinc-400">PC: {item.pcNo}</span>
                       )}
-                      {!item.room_no && !item.pc_no && (
+                      {!item.roomNo && !item.pcNo && (
                         <span className="text-zinc-500">—</span>
                       )}
                     </div>
@@ -304,9 +304,9 @@ export default function AdminSubmissions({ params }) {
                     {getLanguageDisplay(item.language)}
                   </td>
                   <td className="py-3 px-4 text-blue-400 hover:underline">
-                    <Link href={`/contests/${contestId}/${item.problem_id}`}>
+                    <Link href={`/contests/${contestId}/${item.problemId}`}>
                       {String.fromCharCode(
-                        "A".charCodeAt(0) + item.problem_index - 1,
+                        "A".charCodeAt(0) + item.problemIndex - 1,
                       )}
                     </Link>
                   </td>

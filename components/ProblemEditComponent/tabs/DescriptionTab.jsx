@@ -52,8 +52,8 @@ export default function DescriptionTab({ problemData, setProblemData }) {
             Describe the input format in detail.
           </p>
           <TipTapWrapper
-            field="input_statement"
-            initialContent={problemData.input_statement}
+            field="inputStatement"
+            initialContent={problemData.inputStatement}
             setProblemData={setProblemData}
           />
         </div>
@@ -66,8 +66,8 @@ export default function DescriptionTab({ problemData, setProblemData }) {
             Describe the expected output format in detail.
           </p>
           <TipTapWrapper
-            field="output_statement"
-            initialContent={problemData.output_statement}
+            field="outputStatement"
+            initialContent={problemData.outputStatement}
             setProblemData={setProblemData}
           />
         </div>

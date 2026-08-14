@@ -26,17 +26,15 @@ problemModule.getProblem = async (problemId) => {
     );
     const problemData = response.data;
 
-    // Ensure test_cases is always an array (handle null/undefined)
-    if (!problemData.test_cases || !Array.isArray(problemData.test_cases)) {
-      problemData.test_cases = [];
+    if (!problemData.testCases || !Array.isArray(problemData.testCases)) {
+      problemData.testCases = [];
     }
 
-    // Ensure numeric fields are properly typed
-    if (problemData.time_limit) {
-      problemData.time_limit = parseInt(problemData.time_limit);
+    if (problemData.timeLimit) {
+      problemData.timeLimit = parseInt(problemData.timeLimit);
     }
-    if (problemData.memory_limit) {
-      problemData.memory_limit = parseInt(problemData.memory_limit);
+    if (problemData.memoryLimit) {
+      problemData.memoryLimit = parseInt(problemData.memoryLimit);
     }
     return { data: problemData };
   } catch (error) {
@@ -66,7 +64,6 @@ problemModule.getProblem = async (problemId) => {
  */
 problemModule.updateProblem = async (problem) => {
   try {
-    // Helper function to safely stringify content if it's not already a string
     const safeStringify = (content) => {
       if (typeof content === "string") {
         return content;
@@ -77,16 +74,14 @@ problemModule.updateProblem = async (problem) => {
     const response = await apiClient.patch(API_ENDPOINTS.PROBLEMS, {
       id: problem.id,
       title: problem.title,
-      slug: problem.slug,
       statement: safeStringify(problem.statement),
-      input_statement: safeStringify(problem.input_statement),
-      output_statement: safeStringify(problem.output_statement),
-      time_limit: parseInt(problem.time_limit),
-      memory_limit: parseInt(problem.memory_limit),
-      test_cases: problem.test_cases,
-      checker_type: problem.checker_type,
-      checker_strict_space: problem.checker_strict_space,
-      checker_precision: problem.checker_precision,
+      inputStatement: safeStringify(problem.inputStatement),
+      outputStatement: safeStringify(problem.outputStatement),
+      timeLimit: parseInt(problem.timeLimit),
+      memoryLimit: parseInt(problem.memoryLimit),
+      checkerType: problem.checkerType,
+      checkerStrictSpace: problem.checkerStrictSpace,
+      checkerPrecision: problem.checkerPrecision,
     });
 
     return { data: response.data };
@@ -107,24 +102,24 @@ problemModule.updateProblem = async (problem) => {
 /**
  * Add a test case to a problem
  * @param {Object} testCase - Test case data
- * @param {string} testCase.problem_id - Problem ID
+ * @param {string} testCase.problemId - Problem ID
  * @param {string} testCase.input - Test case input
- * @param {string} testCase.expected_output - Expected output
- * @param {boolean} testCase.is_sample - Whether this is a sample test case
+ * @param {string} testCase.expectedOutput - Expected output
+ * @param {boolean} testCase.isSample - Whether this is a sample test case
  * @returns {Promise<{data?: Object, error?: string}>}
  */
 problemModule.addTestCase = async (testCase) => {
-  const normalizedProblemId = normalizeId(testCase.problem_id);
+  const normalizedProblemId = normalizeId(testCase.problemId);
   if (!normalizedProblemId) {
     return { error: "Problem ID is required" };
   }
 
   try {
     const response = await apiClient.post(API_ENDPOINTS.TESTCASES, {
-      problem_id: normalizedProblemId,
+      problemId: normalizedProblemId,
       input: testCase.input,
-      expected_output: testCase.expected_output,
-      is_sample: testCase.is_sample,
+      expectedOutput: testCase.expectedOutput,
+      isSample: testCase.isSample,
     });
 
     return { data: response.data };
@@ -149,9 +144,6 @@ problemModule.addTestCase = async (testCase) => {
  * Update a test case
  * @param {number|string} testCaseId - Test case ID
  * @param {Object} testCase - Test case data
- * @param {string} testCase.input - Test case input
- * @param {string} testCase.expected_output - Expected output
- * @param {boolean} testCase.is_sample - Whether this is a sample test case
  * @returns {Promise<{data?: Object, error?: string}>}
  */
 problemModule.updateTestCase = async (testCaseId, testCase) => {
@@ -165,8 +157,8 @@ problemModule.updateTestCase = async (testCaseId, testCase) => {
       API_ENDPOINTS.TESTCASE_BY_ID(normalizedTestCaseId),
       {
         input: testCase.input,
-        expected_output: testCase.expected_output,
-        is_sample: testCase.is_sample,
+        expectedOutput: testCase.expectedOutput,
+        isSample: testCase.isSample,
       },
     );
 

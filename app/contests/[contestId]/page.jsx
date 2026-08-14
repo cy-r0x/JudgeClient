@@ -58,8 +58,8 @@ function ProblemList({ params }) {
   const { contest, problems } = data;
 
   // Calculate end time from start_time and duration_seconds
-  const startTime = new Date(contest.start_time).getTime() / 1000; // Convert to Unix timestamp
-  const endTime = startTime + contest.duration_seconds;
+  const startTime = new Date(contest.startTime).getTime() / 1000; // Convert to Unix timestamp
+  const endTime = startTime + contest.durationSeconds;
 
   return (
     <>

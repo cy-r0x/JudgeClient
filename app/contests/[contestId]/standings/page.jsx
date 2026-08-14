@@ -23,7 +23,8 @@ import LoadingSpinner from "@/components/LoadingSpinner/LoadingSpinner";
 export default function StandingsPage({ params }) {
   const [standingsData, setStandingsData] = useState(null);
   const [standingsError, setStandingsError] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [contestId, setContestId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const searchParams = useSearchParams();
@@ -46,10 +47,18 @@ export default function StandingsPage({ params }) {
   }, [searchParams]);
 
   // Fetch standings data
-  const fetchStandings = async (page = 1) => {
+  const fetchStandings = async (page = 1, options = {}) => {
     if (!contestId) return;
 
-    setIsLoading(true);
+    const { silent = false } = options;
+    const hasExistingData = Boolean(standingsData);
+
+    if (silent) {
+      setIsRefreshing(true);
+    } else {
+      setIsInitialLoading(true);
+    }
+
     try {
       const { data, error } = await contestModule.getContestStandings(
         contestId,
@@ -57,17 +66,31 @@ export default function StandingsPage({ params }) {
       );
 
       if (error) {
-        setStandingsError(error);
-        setStandingsData(null);
+        if (!silent || !hasExistingData) {
+          setStandingsError(error);
+        }
+        // Keep existing table data visible during background refresh failures.
+        if (!silent) {
+          setStandingsData(null);
+        }
       } else {
         setStandingsData(data);
         setStandingsError(null);
       }
     } catch (err) {
-      setStandingsError("Failed to load standings");
-      setStandingsData(null);
+      if (!silent || !hasExistingData) {
+        setStandingsError("Failed to load standings");
+      }
+      // Keep existing table data visible during background refresh failures.
+      if (!silent) {
+        setStandingsData(null);
+      }
     } finally {
-      setIsLoading(false);
+      if (silent) {
+        setIsRefreshing(false);
+      } else {
+        setIsInitialLoading(false);
+      }
     }
   };
 
@@ -80,7 +103,7 @@ export default function StandingsPage({ params }) {
 
     // Set up interval for auto-refresh (15 seconds)
     const interval = setInterval(() => {
-      fetchStandings(currentPage);
+      fetchStandings(currentPage, { silent: true });
     }, 30000);
 
     // Cleanup interval on unmount
@@ -92,7 +115,7 @@ export default function StandingsPage({ params }) {
     router.push(`?page=${page}`, { scroll: false });
   };
 
-  if (isLoading) {
+  if (isInitialLoading && !standingsData) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <LoadingSpinner text="Loading Standings..." />
@@ -132,11 +155,11 @@ export default function StandingsPage({ params }) {
         </div>
 
         {/* Compact Timer */}
-        {standingsData?.start_time && standingsData?.duration_seconds && (
+        {standingsData?.startTime && standingsData?.durationSeconds && (
           <div className="mb-6">
             <CompactTimer
-              startTime={standingsData.start_time}
-              durationSeconds={standingsData.duration_seconds}
+              startTime={standingsData.startTime}
+              durationSeconds={standingsData.durationSeconds}
             />
           </div>
         )}
@@ -149,6 +172,10 @@ export default function StandingsPage({ params }) {
             limit={standingsData?.limit || 100}
           />
         </div>
+
+        {isRefreshing && (
+          <p className="mt-3 text-xs text-zinc-500 text-right">Refreshing standings...</p>
+        )}
 
         {/* Pagination */}
         {standingsData && standingsData.total_page > 1 && (

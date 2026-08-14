@@ -133,13 +133,13 @@ function Navbar() {
                     <span className="text-zinc-400">
                       Welcome,{" "}
                       <span className="text-orange-500 font-medium">
-                        {user?.full_name || user?.username || "User"}
+                        {user?.fullName || user?.username || "User"}
                       </span>
-                      {user?.clan && (
+                      {user?.additionalInfo && (
                         <>
                           <br />
                           <span className="text-xs text-zinc-500">
-                            {user.clan}
+                            {user.additionalInfo}
                           </span>
                         </>
                       )}

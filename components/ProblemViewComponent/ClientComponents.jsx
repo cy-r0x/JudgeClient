@@ -55,12 +55,12 @@ export function EditorSection({ problemData, contestId }) {
 
   const router = useRouter();
 
-  // Initialize code and language from last_submission
+  // Initialize code and language from lastSubmission
   useEffect(() => {
-    if (problemData?.last_submission) {
-      const { source_code, language } = problemData.last_submission;
-      if (source_code) {
-        setCode(source_code);
+    if (problemData?.lastSubmission) {
+      const { sourceCode, language } = problemData.lastSubmission;
+      if (sourceCode) {
+        setCode(sourceCode);
       }
       if (language) {
         setSelectedLanguage(language);
@@ -92,10 +92,10 @@ export function EditorSection({ problemData, contestId }) {
     setNotification({ visible: false, message: "", type: "info" });
 
     const { data: responseData, error } = await compileAndRun({
-      contest_id: contestId,
-      problem_id: problemData.id,
+      contestId: contestId,
+      problemId: problemData.id,
       language: selectedLanguage,
-      source_code: code,
+      sourceCode: code,
     });
 
     setIsCompiling(false);
@@ -151,9 +151,9 @@ export function EditorSection({ problemData, contestId }) {
     setNotification({ visible: false, message: "", type: "info" });
 
     const { data, error } = await submissionModule.submitSubmission({
-      problem_id: problemData.id,
-      contest_id: contestId,
-      source_code: code,
+      problemId: problemData.id,
+      contestId: contestId,
+      sourceCode: code,
       language: selectedLanguage,
     });
 

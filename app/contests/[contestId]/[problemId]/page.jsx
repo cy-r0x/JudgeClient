@@ -43,22 +43,22 @@ export default function ProblemDescription({ params }) {
           console.error("Error parsing statement:", e);
         }
       }
-      if (typeof parsedData.input_statement === "string") {
+      if (typeof parsedData.inputStatement === "string") {
         try {
-          parsedData.input_statement = JSON.parse(parsedData.input_statement);
+          parsedData.inputStatement = JSON.parse(parsedData.inputStatement);
         } catch (e) {
-          console.error("Error parsing input_statement:", e);
+          console.error("Error parsing inputStatement:", e);
         }
       }
-      if (typeof parsedData.output_statement === "string") {
+      if (typeof parsedData.outputStatement === "string") {
         try {
-          parsedData.output_statement = JSON.parse(parsedData.output_statement);
+          parsedData.outputStatement = JSON.parse(parsedData.outputStatement);
         } catch (e) {
-          console.error("Error parsing output_statement:", e);
+          console.error("Error parsing outputStatement:", e);
         }
       }
 
-      parsedData.contest_id = contestId;
+      parsedData.contestId = contestId;
 
       setProblemData(parsedData);
       setLoading(false);
@@ -85,10 +85,10 @@ export default function ProblemDescription({ params }) {
         {/* Editor section - 40% width - Client-side rendered */}
         <div className="w-[40%] flex flex-col overflow-hidden">
           {/* Timer at top of editor section */}
-          {problemData.start_time && problemData.duration_seconds && (
+          {problemData.startTime && problemData.durationSeconds && (
             <CompactTimer
-              startTime={problemData.start_time}
-              durationSeconds={problemData.duration_seconds}
+              startTime={problemData.startTime}
+              durationSeconds={problemData.durationSeconds}
             />
           )}
           <div className="grow overflow-hidden">

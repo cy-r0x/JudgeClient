@@ -33,7 +33,7 @@ export default function SubmissionsTable({ isAdmin, params }) {
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
   const [limit, setLimit] = useState(20);
-  const [verdict, setVerdict] = useState("");
+  const [status, setStatus] = useState("");
 
   useEffect(() => {
     if (!contestId) return;
@@ -46,7 +46,7 @@ export default function SubmissionsTable({ isAdmin, params }) {
       const { data, error } = await submissionModule.getSubmissions({
         page: currentPage,
         limit,
-        verdict: verdict || undefined,
+        status: status || undefined,
       });
 
       // const { data, error } = await submissionModule.getSubmissionsByContest(1);
@@ -64,7 +64,7 @@ export default function SubmissionsTable({ isAdmin, params }) {
     };
 
     fetchSubmissions();
-  }, [contestId, currentPage, limit, verdict]);
+  }, [contestId, currentPage, limit, status]);
 
   if (!contestId || loading) {
     return (
@@ -156,20 +156,20 @@ export default function SubmissionsTable({ isAdmin, params }) {
               Filter by Verdict
             </label>
             <select
-              value={verdict}
+              value={status}
               onChange={(e) => {
-                setVerdict(e.target.value);
+                setStatus(e.target.value);
                 setCurrentPage(1);
               }}
               className="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-zinc-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
             >
               <option value="">All Verdicts</option>
-              <option value="ac">Accepted</option>
-              <option value="wa">Wrong Answer</option>
-              <option value="tle">Time Limit Exceeded</option>
-              <option value="mle">Memory Limit Exceeded</option>
-              <option value="re">Runtime Error</option>
-              <option value="ce">Compilation Error</option>
+              <option value="ACCEPTED">Accepted</option>
+              <option value="WRONG_ANSWER">Wrong Answer</option>
+              <option value="TIME_LIMIT_EXCEEDED">Time Limit Exceeded</option>
+              <option value="MEMORY_LIMIT_EXCEEDED">Memory Limit Exceeded</option>
+              <option value="RUNTIME_ERROR">Runtime Error</option>
+              <option value="COMPILATION_ERROR">Compilation Error</option>
               <option value="Pending">Pending</option>
             </select>
           </div>
@@ -272,16 +272,16 @@ export default function SubmissionsTable({ isAdmin, params }) {
                     {getLanguageDisplay(item.language)}
                   </td>
                   <td className="py-3 px-4 text-blue-400 hover:underline">
-                    <Link href={`/contests/${contestId}/${item.problem_id}`}>
+                    <Link href={`/contests/${contestId}/${item.problemId}`}>
                       {String.fromCharCode(
-                        "A".charCodeAt(0) + item.problem_index - 1
+                        "A".charCodeAt(0) + item.problemIndex - 1
                       )}
                     </Link>
                   </td>
                   <td className="py-3 px-4">
                     <div className="flex items-center gap-2">
                       <span className="text-base">
-                        {getVerdictIcon(item.verdict, {
+                        {getVerdictIcon(item.status, {
                           MdOutlineDone,
                           MdClose,
                           MdAccessTime,
@@ -291,23 +291,23 @@ export default function SubmissionsTable({ isAdmin, params }) {
                       </span>
                       <span
                         className={`font-medium text-sm ${getVerdictColor(
-                          item.verdict
+                          item.status
                         )}`}
                       >
-                        {getVerdictName(item.verdict)}
+                        {getVerdictName(item.status)}
                       </span>
                     </div>
                   </td>
                   <td className="py-3 px-4">
-                    {item.execution_time
-                      ? `${item.execution_time * 1000} ms`
+                    {item.execTime
+                      ? `${(Number(item.execTime) * 1000).toFixed(2)} ms`
                       : "—"}
                   </td>
                   <td className="py-3 px-4">
-                    {item.memory_used ? `${item.memory_used} KB` : "—"}
+                    {item.execMemory ? `${Number(item.execMemory).toFixed(2)} KB` : "—"}
                   </td>
                   <td className="py-3 px-4 text-zinc-400">
-                    {getRelativeTime(item.submitted_at)}
+                    {getRelativeTime(item.createdAt)}
                   </td>
                 </tr>
               ))}

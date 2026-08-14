@@ -8,8 +8,8 @@ import { RiTrophyFill, RiMedalFill, RiStarFill } from "react-icons/ri";
  *
  * @param {Object} props - Component props
  * @param {Object} props.standingsData - Standings data from API
- * @param {number} props.standingsData.contest_id - Contest ID
- * @param {Object} props.standingsData.problem_mapping - Mapping of problem index to problem ID
+ * @param {number} props.standingsData.contestId - Contest ID
+ * @param {Object} props.standingsData.problemMapping - Mapping of problem index to problem ID
  * @param {Array} props.standingsData.standings - Array of user standings
  * @param {number} props.currentPage - Current page number
  * @param {number} props.limit - Items per page
@@ -20,11 +20,11 @@ export default function StandingsComponent({
   currentPage = 1,
   limit = 100,
 }) {
-  const { problem_mapping, standings, problem_solve_status, contest_id } =
+  const { problemMapping, standings, problemSolveStatus, contestId } =
     standingsData;
 
   // Get problem count from mapping
-  const problemCount = Object.keys(problem_mapping || {}).length;
+  const problemCount = Object.keys(problemMapping || {}).length;
 
   // Generate problem letters (A, B, C, ...)
   const problemLetters = Array.from({ length: problemCount }, (_, i) =>
@@ -34,8 +34,8 @@ export default function StandingsComponent({
   // Helper function to get report stats for a problem
   const getProblemStats = (problemIndex) => {
     const problemNumber = problemIndex + 1;
-    if (problem_solve_status && problem_solve_status[problemNumber]) {
-      return problem_solve_status[problemNumber];
+    if (problemSolveStatus && problemSolveStatus[problemNumber]) {
+      return problemSolveStatus[problemNumber];
     }
     return { solved: 0, attempted: 0 };
   };
@@ -145,14 +145,14 @@ export default function StandingsComponent({
             </th>
             {problemLetters.map((letter, index) => {
               const stats = getProblemStats(index);
-              const problemId = problem_mapping[index + 1];
+              const problemId = problemMapping[index + 1];
               return (
                 <th
                   key={index}
                   className="px-3 py-4 text-center font-bold text-sm text-zinc-300 min-w-[70px] border-l border-zinc-700/50"
                 >
                   <Link
-                    href={`/contests/${contest_id}/${problemId}`}
+                    href={`/contests/${contestId}/${problemId}`}
                     className="flex flex-col items-center gap-1 hover:text-orange-400 transition-colors"
                   >
                     <span>{letter}</span>
@@ -183,9 +183,9 @@ export default function StandingsComponent({
                 <td className="px-4 py-3 sticky left-16 bg-zinc-900 z-10">
                   <div className="flex flex-col">
                     <p className="font-semibold text-zinc-100 text-sm">
-                      {user.full_name}
+                      {user.name}
                     </p>
-                    <p className="text-xs text-zinc-500 mt-0.5">{user.clan}</p>
+                    <p className="text-xs text-zinc-500 mt-0.5">{user.username}</p>
                   </div>
                 </td>
                 <td className="px-4 py-3 text-center">

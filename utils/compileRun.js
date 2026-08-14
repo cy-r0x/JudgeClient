@@ -9,12 +9,12 @@ import { API_ENDPOINTS } from "./constants";
  * Execute code with test cases
  * @param {Object} payload - Execution payload
  * @param {string|null} payload.submission_id - Submission ID (optional)
- * @param {string|null} payload.problem_id - Problem ID (optional)
+ * @param {string|null} payload.problemId - Problem ID (optional)
  * @param {string} payload.language - Programming language
- * @param {string} payload.source_code - Source code to execute
+ * @param {string} payload.sourceCode - Source code to execute
  * @param {Array} payload.testcases - Array of test cases
- * @param {number} payload.time_limit - Time limit in seconds
- * @param {number} payload.memory_limit - Memory limit in MB
+ * @param {number} payload.timeLimit - Time limit in seconds
+ * @param {number} payload.memoryLimit - Memory limit in MB
  * @returns {Promise<{data?: any, error?: string}>}
  */
 export const compileAndRun = async (payload) => {

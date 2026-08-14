@@ -5,11 +5,9 @@ import { MdCreate, MdList, MdPerson } from "react-icons/md";
 import Button from "@/components/ButtonComponent/Button";
 import CreateContestModal from "@/components/CreateContestModal/CreateContestModal";
 import contestModule from "@/api/contest/contest";
-import userModule from "@/api/user/user";
 import { withRole } from "@/components/HOC/withAuth";
 import { USER_ROLES } from "@/utils/constants";
-import axios from "axios";
-import { getToken } from "@/utils/auth";
+import userModule from "@/api/user/user";
 import ContestsList from "@/components/AdminPanel/ContestsList";
 import SettersList from "@/components/AdminPanel/SettersList";
 import CreateSetterForm from "@/components/AdminPanel/CreateSetterForm";
@@ -97,7 +95,7 @@ function AdminPanel() {
     setSetterSuccess("");
     try {
       const response = await userModule.Register({
-        full_name: formData.name,
+        fullName: formData.name,
         username: formData.username,
         password: formData.password,
         role: "setter",
@@ -114,7 +112,7 @@ function AdminPanel() {
     } catch (err) {
       setSetterError(
         err.response?.data?.message ||
-          "Failed to create setter. Please try again."
+          "Failed to create setter. Please try again.",
       );
     }
   };
@@ -126,24 +124,15 @@ function AdminPanel() {
     setSetterError("");
     setSetterSuccess("");
     try {
-      const token = getToken();
-      const response = await axios.post(
-        `/api/users/delete/${userId}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.status === 200) {
-        setSetterSuccess("Setter deleted successfully!");
-        fetchSetters();
+      const { error } = await userModule.deleteUser(userId);
+      if (error) {
+        setSetterError(error);
+        return;
       }
+      setSetterSuccess("Setter deleted successfully!");
+      fetchSetters();
     } catch (error) {
-      setSetterError(
-        error.response?.data?.message || "Failed to delete setter"
-      );
+      setSetterError(error.message || "Failed to delete setter");
     }
   };
 
@@ -168,6 +157,7 @@ function AdminPanel() {
         <CreateContestModal
           isOpen={modalActive}
           onClose={() => setModalActive(false)}
+          onSuccess={fetchContests}
         />
       )}
 

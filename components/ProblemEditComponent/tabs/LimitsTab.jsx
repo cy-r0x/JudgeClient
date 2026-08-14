@@ -10,16 +10,16 @@ export default function LimitsTab({ problemData, handleInputChange }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label
-            htmlFor="time_limit"
+            htmlFor="timeLimit"
             className="block text-sm font-medium text-zinc-300 mb-1"
           >
             Time Limit (seconds)
           </label>
           <input
             type="number"
-            id="time_limit"
-            name="time_limit"
-            value={problemData.time_limit}
+            id="timeLimit"
+            name="timeLimit"
+            value={problemData.timeLimit}
             onChange={handleInputChange}
             min="1"
             step="1"
@@ -32,16 +32,16 @@ export default function LimitsTab({ problemData, handleInputChange }) {
 
         <div>
           <label
-            htmlFor="memory_limit"
+            htmlFor="memoryLimit"
             className="block text-sm font-medium text-zinc-300 mb-1"
           >
             Memory Limit (MB)
           </label>
           <input
             type="number"
-            id="memory_limit"
-            name="memory_limit"
-            value={problemData.memory_limit}
+            id="memoryLimit"
+            name="memoryLimit"
+            value={problemData.memoryLimit}
             onChange={handleInputChange}
             min="16"
             step="16"
