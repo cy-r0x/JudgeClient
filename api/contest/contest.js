@@ -207,6 +207,52 @@ contestModule.assignProblem = async (contestProblem) => {
 };
 
 /**
+ * Remove a problem from a contest
+ * @param {Object} contestProblem - Contest problem assignment data
+ * @returns {Promise<{data?: Object, error?: string}>}
+ */
+contestModule.removeProblem = async (contestProblem) => {
+  if (!contestProblem || typeof contestProblem !== "object") {
+    return { error: "Contest problem data is required" };
+  }
+
+  const normalizedContestId = normalizeId(contestProblem.contestId);
+  const normalizedProblemId = normalizeId(contestProblem.problemId);
+  if (!normalizedContestId || !normalizedProblemId) {
+    return { error: "Contest ID and Problem ID are required" };
+  }
+
+  try {
+    const response = await apiClient.delete(API_ENDPOINTS.CONTEST_ASSIGN, {
+      data: {
+        contestId: normalizedContestId,
+        problemId: normalizedProblemId,
+      },
+    });
+
+    return { data: response.data };
+  } catch (error) {
+    const handledError = handleApiError(error, {
+      context: "Remove Problem from Contest",
+      contestId: normalizedContestId,
+      problemId: normalizedProblemId,
+    });
+
+    if (error.status === 401) {
+      return { error: "Invalid or expired token" };
+    }
+    if (error.status === 403) {
+      return { error: "Access denied" };
+    }
+    if (error.status === 404) {
+      return { error: "Problem not assigned to this contest" };
+    }
+
+    return { error: handledError.error };
+  }
+};
+
+/**
  * Update contest problem indices
  * @param {Array} contestProblems - Array of { contestId, problemId, index }
  * @returns {Promise<{data?: Object, error?: string}>}

@@ -20,6 +20,8 @@ COPY . .
 
 # Next.js collects anonymous telemetry data. Disable it.
 ENV NEXT_TELEMETRY_DISABLED=1
+ARG NEXT_PUBLIC_API_URL=http://localhost:8000
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
 RUN npm run build
 
@@ -40,7 +42,7 @@ COPY --from=builder /app/.next/static ./.next/static
 
 USER nextjs
 
-EXPOSE 3000
+EXPOSE 5121
 
 ENV PORT=5121
 ENV HOSTNAME="0.0.0.0"

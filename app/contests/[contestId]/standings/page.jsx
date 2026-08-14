@@ -178,11 +178,11 @@ export default function StandingsPage({ params }) {
         )}
 
         {/* Pagination */}
-        {standingsData && standingsData.total_page > 1 && (
+        {standingsData && standingsData.totalPages > 1 && (
           <Pagination
             currentPage={currentPage}
-            totalPages={standingsData.total_page}
-            totalItems={standingsData.total_item}
+            totalPages={standingsData.totalPages}
+            totalItems={standingsData.totalItem}
             limit={standingsData.limit}
             onPageChange={handlePageChange}
             itemName="participants"

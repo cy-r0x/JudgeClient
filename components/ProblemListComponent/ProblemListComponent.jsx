@@ -1,7 +1,7 @@
 import { RiGroupLine, RiCheckLine, RiCloseCircleLine } from "react-icons/ri";
 
 function ProblemComponent({ problemData, index }) {
-  const { solved, attempted, total_solvers, title } = problemData;
+  const { solved, attempted, totalSolvers, title } = problemData;
 
   // Determine status badge
   const getStatusBadge = () => {
@@ -55,7 +55,7 @@ function ProblemComponent({ problemData, index }) {
       <div className="flex items-center gap-2 px-3 py-1 bg-zinc-700/50 rounded justify-around">
         <RiGroupLine size={18} className="text-zinc-400" />
         <span className="text-base font-medium text-zinc-300">
-          x{total_solvers || 0}
+          x{totalSolvers || 0}
         </span>
       </div>
     </div>

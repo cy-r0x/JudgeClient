@@ -200,6 +200,7 @@ export default function ManageUsersTab({
       const formData = new FormData();
       formData.append("prefix", csvData.prefix);
       formData.append("clan_length", csvData.clan_length);
+      formData.append("contest_id", contestData.contest.id);
       formData.append("contestId", contestData.contest.id);
       formData.append("file", csvData.file);
 

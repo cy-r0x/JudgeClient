@@ -17,6 +17,26 @@ const apiClient = axios.create({
   timeout: 30000,
 });
 
+apiClient.interceptors.request.use((config) => {
+  if (typeof window !== "undefined") {
+    try {
+      const raw = localStorage.getItem("user");
+      const user = raw ? JSON.parse(raw) : null;
+      if (user?.accessToken && !config.headers?.Authorization) {
+        config.headers.Authorization = `Bearer ${user.accessToken}`;
+      }
+    } catch {
+      // ignore malformed localStorage
+    }
+  }
+
+  if (typeof FormData !== "undefined" && config.data instanceof FormData) {
+    delete config.headers["Content-Type"];
+  }
+
+  return config;
+});
+
 /**
  * Response interceptor to unwrap API response wrapper and handle errors
  */

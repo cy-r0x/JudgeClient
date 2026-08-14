@@ -59,7 +59,7 @@ export default function StandingsComponent({
         display: (
           <div className="flex flex-col items-center gap-0.5">
             <span className="font-bold text-green-400 flex items-center gap-1">
-              {problemData.first_blood && (
+              {problemData.firstBlood && (
                 <RiStarFill className="text-yellow-400 text-lg" />
               )}
               <span className="text-sm">+{attempts || ""}</span>
@@ -67,7 +67,7 @@ export default function StandingsComponent({
             <span className="text-xs text-zinc-500">{penalty}'</span>
           </div>
         ),
-        className: problemData.first_blood
+        className: problemData.firstBlood
           ? "bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border-yellow-500/30 border text-green-400"
           : "bg-green-500/10 text-green-400",
       };

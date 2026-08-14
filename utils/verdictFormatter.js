@@ -26,6 +26,8 @@ export const getVerdictName = (verdict) => {
     memory_limit_exceeded: "Memory Limit Exceeded",
     runtime_error: "Runtime Error",
     compilation_error: "Compilation Error",
+    ie: "Internal Error",
+    internal_error: "Internal Error",
   };
 
   return verdictMap[verdict?.toLowerCase()] || verdict || "Unknown";
@@ -83,6 +85,9 @@ export const getVerdictIcon = (verdict, icons) => {
     case "ce":
     case "compilation_error":
       return <MdClose className="text-red-500" title="Compilation Error" />;
+    case "ie":
+    case "internal_error":
+      return <MdClose className="text-red-500" title="Internal Error" />;
     case "pending":
       return <MdLoop className="text-gray-400 animate-spin" title="Pending" />;
     default:

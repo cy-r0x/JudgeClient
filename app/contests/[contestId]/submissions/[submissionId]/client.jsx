@@ -6,13 +6,18 @@ import { monokai } from "@uiw/codemirror-theme-monokai";
 import { cpp } from "@codemirror/lang-cpp";
 import { python } from "@codemirror/lang-python";
 import { java } from "@codemirror/lang-java";
+import { javascript } from "@codemirror/lang-javascript";
 import Button from "@/components/ButtonComponent/Button";
 
 export function SubmissionCodeViewer({ code, language }) {
   const languageExtensions = {
+    c: cpp(),
     cpp: cpp(),
+    py: python(),
     python: python(),
     java: java(),
+    js: javascript(),
+    javascript: javascript(),
   };
 
   const lang = languageExtensions[language] || cpp();

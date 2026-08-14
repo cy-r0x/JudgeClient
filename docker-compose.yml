@@ -5,14 +5,17 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:8000
     ports:
       - "5121:5121"
     environment:
       - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
     restart: unless-stopped
     networks:
-      - app-network
+      - shared-net
 
 networks:
-  app-network:
-    driver: bridge
+  shared-net:
+    external: true

@@ -98,8 +98,16 @@ export default function ManageProblemsTab({
     try {
       setLoading(true);
 
-      // TODO: Implement remove problem API call when available
-      // For now, just remove from local state
+      const { error } = await contestModule.removeProblem({
+        contestId: contestData.contest.id,
+        problemId,
+      });
+
+      if (error) {
+        showNotification(error, "error");
+        return;
+      }
+
       setContestProblems((prev) =>
         prev.filter((p) => String(p.problemId) !== String(problemId)),
       );

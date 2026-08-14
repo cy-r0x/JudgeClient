@@ -229,9 +229,11 @@ export default function SubmissionPage({ params }) {
                   ? "Python 3.10"
                   : submissionData.language === "c"
                     ? "GNU GCC11"
-                    : submissionData.language === "java"
-                      ? "Java 21"
-                      : submissionData.language}
+                    : submissionData.language === "js"
+                      ? "Node.js 24"
+                      : submissionData.language === "java"
+                        ? "Java 21"
+                        : submissionData.language}
             </span>
           </div>
         </div>

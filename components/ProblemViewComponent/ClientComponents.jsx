@@ -158,7 +158,6 @@ export function EditorSection({ problemData, contestId }) {
     });
 
     if (error) {
-      ``;
       setNotification({
         visible: true,
         message: error,

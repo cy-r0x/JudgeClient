@@ -7,10 +7,13 @@ import { javascript } from "@codemirror/lang-javascript";
 
 function CodeEditor({ handleChange, selectedLanguage, value, height }) {
   const languageExtensions = {
+    c: cpp(),
     cpp: cpp(),
+    py: python(),
     python: python(),
     java: java(),
     js: javascript(),
+    javascript: javascript(),
   };
 
   const lang = languageExtensions[selectedLanguage] || cpp();

@@ -27,7 +27,9 @@ problemModule.getProblem = async (problemId) => {
     const problemData = response.data;
 
     if (!problemData.testCases || !Array.isArray(problemData.testCases)) {
-      problemData.testCases = [];
+      problemData.testCases = Array.isArray(problemData.test_cases)
+        ? problemData.test_cases
+        : [];
     }
 
     if (problemData.timeLimit) {

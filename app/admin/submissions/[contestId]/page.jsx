@@ -54,8 +54,8 @@ export default function AdminSubmissions({ params }) {
         setError(error);
       } else {
         setSubmissions(Array.isArray(data.submissions) ? data.submissions : []);
-        setTotalPages(data.total_pages || 1);
-        setTotalItems(data.total_item || 0);
+        setTotalPages(data.totalPages || 1);
+        setTotalItems(data.totalItem || 0);
       }
       setLoading(false);
     };
